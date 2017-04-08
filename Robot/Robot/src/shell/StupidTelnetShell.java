@@ -10,11 +10,14 @@ import java.util.Scanner;
 
 public class StupidTelnetShell {
 
-	
+	/*
+	 * andrea r2d2.motion set_speed [1, 1]
+	 * andrea r2d2.motion stop
+	 */
 	
 	public static void main(String[] args) {
 		try {
-			Socket socket= new Socket("192.168.1.11", 4000);
+			Socket socket= new Socket("192.168.1.72", 4000);
 			Scanner output= new Scanner(socket.getInputStream());
 			PrintWriter inWriter= new PrintWriter(socket.getOutputStream(),true);
 			Scanner inTyped= new Scanner(System.in);
