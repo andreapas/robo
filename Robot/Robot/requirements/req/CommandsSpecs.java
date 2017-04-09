@@ -11,8 +11,15 @@ public class CommandsSpecs {
 	public void setSpeedCommand() {
 		Commands commands= new Commands();
 		String output=commands.goStraight(2);
-		String expectedOutput="cmd1 r2d2.motion set_speed[2,0]";
+		String expectedOutput="cmd1 r2d2.motion set_speed [2,0]";
 		Assert.assertEquals("Right command sent", expectedOutput, output);
 	}
 
+	@Test
+	public void setAnotherSpeedCommand() {
+		Commands commands= new Commands();
+		String output=commands.goStraight(4);
+		String expectedOutput="cmd1 r2d2.motion set_speed [4,0]";
+		Assert.assertEquals("Right command sent", expectedOutput, output);
+	}
 }
