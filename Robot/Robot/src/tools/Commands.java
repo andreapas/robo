@@ -9,8 +9,11 @@ public class Commands {
 	public String goStraight(int i) {
 		return composeAnswer()+"["+i+",0]";
 	}
-	public String goRight(int i) {
+	public String goLeft(int i) {
 		return composeAnswer()+"[0,"+i+"]";
+	}
+	public String goRight(int i) {
+		return composeAnswer()+"[0,-"+i+"]";
 	}
 	private String composeAnswer(){
 		idValue++;
