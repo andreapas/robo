@@ -7,14 +7,15 @@ public class Commands {
 	private String baseGoCommand=" r2d2.motion set_speed ";
 	
 	public String goStraight(int i) {
-		idValue++;
-		return commandIDName+idValue+baseGoCommand+"["+i+",0]";
+		return composeAnswer()+"["+i+",0]";
 	}
 	public String goRight(int i) {
-		idValue++;
-		return commandIDName+idValue+baseGoCommand+"[0,"+i+"]";
+		return composeAnswer()+"[0,"+i+"]";
 	}
-	
+	private String composeAnswer(){
+		idValue++;
+		return commandIDName+idValue+baseGoCommand;
+	}
 	
 
 }
