@@ -32,7 +32,15 @@ public class ConnectionInfoSpecs {
 		int expectedPort=4000;
 		int port=cs.INPUT_PORT;
 		
-		Assert.assertEquals("Correct Ip Set", expectedPort, port);	
+		Assert.assertEquals("Correct input port obtained", expectedPort, port);	
+	} 
+	@Test
+	public void getPosePort() {
+		ConnectionInfos cs= new ConnectionInfos("192.168.1.2");
+		int expectedPort=60000;
+		int port=cs.POSE_PORT;
+		
+		Assert.assertEquals("Correct pose port obtained", expectedPort, port);	
 	} 
 
 }
