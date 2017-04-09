@@ -2,12 +2,14 @@ package shells;
 
 public class ConnectionInfos {
 
+	private String ip;
+
 	public ConnectionInfos(String ip) {
-		// TODO Auto-generated constructor stub
+		this.ip = ip;
 	}
 
 	public String getIp() {
-		return "192.168.1.1";
+		return ip;
 
 	}
 
