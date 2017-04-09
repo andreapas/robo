@@ -22,4 +22,15 @@ public class CommandsSpecs {
 		String expectedOutput="cmd1 r2d2.motion set_speed [4,0]";
 		Assert.assertEquals("Right command sent", expectedOutput, output);
 	}
+	
+	@Test
+	public void sendTwoCommands() {
+		Commands commands= new Commands();
+		String output=commands.goStraight(4);
+		String expectedOutput="cmd1 r2d2.motion set_speed [4,0]";
+		Assert.assertEquals("Right command sent", expectedOutput, output);
+		output=commands.goStraight(2);
+		expectedOutput="cmd2 r2d2.motion set_speed [2,0]";
+		Assert.assertEquals("Right command sent with right id detected", expectedOutput, output);
+	}
 }
