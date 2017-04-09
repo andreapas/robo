@@ -10,5 +10,11 @@ public class Commands {
 		idValue++;
 		return commandIDName+idValue+baseGoCommand+"["+i+",0]";
 	}
+	public String goRight(int i) {
+		idValue++;
+		return commandIDName+idValue+baseGoCommand+"[0,"+i+"]";
+	}
+	
+	
 
 }

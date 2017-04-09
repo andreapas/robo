@@ -33,4 +33,12 @@ public class CommandsSpecs {
 		expectedOutput="cmd2 r2d2.motion set_speed [2,0]";
 		Assert.assertEquals("Right command sent with right id detected", expectedOutput, output);
 	}
+	
+	@Test
+	public void rotateRightCommand() {
+		Commands commands= new Commands();
+		String output=commands.goRight(2);
+		String expectedOutput="cmd1 r2d2.motion set_speed [0,2]";
+		Assert.assertEquals("Right command sent", expectedOutput, output);
+	}
 }
