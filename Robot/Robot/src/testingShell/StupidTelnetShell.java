@@ -1,4 +1,4 @@
-package shell;
+package testingShell;
 
 import java.io.BufferedWriter;
 import java.io.IOException;

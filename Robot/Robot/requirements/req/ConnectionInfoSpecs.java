@@ -3,7 +3,7 @@ package req;
 import org.junit.Assert;
 import org.junit.Test;
 
-import shells.ConnectionInfos;
+import entities.ConnectionInfos;
 
 	
 public class ConnectionInfoSpecs {

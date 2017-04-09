@@ -1,4 +1,4 @@
-package shells;
+package entities;
 
 public class ConnectionInfos {
 
