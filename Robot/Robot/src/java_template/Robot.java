@@ -7,9 +7,15 @@ package java_template;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import sensorsActuators.*;
+
+import sensorsActuators.DistanceSensor;
+import sensorsActuators.IrSensor;
+import sensorsActuators.PoseSensor;
+import sensorsActuators.SensorListener;
+import sensorsActuators.SpeedActuator;
 
 /**
  *
@@ -29,7 +35,7 @@ public class Robot {
 
         speedAct = new SpeedActuator(name, "motion", ip, 4000);
 
-        irSens = new IrSensor(name, "IR1", ip,4000);
+        irSens = new IrSensor(name, "ir1", ip,4000);
         irSens.setSensorListener(new IrSensorListener());
 
         poseSens = new PoseSensor(name, "pose", ip,4000);
@@ -44,29 +50,24 @@ public class Robot {
 
         @Override
         public void onSense(int meas) {
-        	System.out.println("test1");
             throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
 
         @Override
         public void onSense(double meas) {
-        	System.out.println("test2");
-
             throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
 
         @Override
         public void onSense(double[] meas) {
-        	System.out.println("test3");
-
-//            for (double i : meas) {
-//                System.out.println(i);
-//            }
+        	System.out.println("POSE SENSOR:");
+            for (double i : meas) {
+                System.out.println(i);
+            }
         }
 
         @Override
         public void onSense(String s, HashMap<String, Double> map) {
-        	System.out.println("test4");
             throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
 
@@ -86,9 +87,10 @@ public class Robot {
 
         @Override
         public void onSense(double[] meas) {
-//            for (double i : meas) {
-//                System.out.println(i);
-//            }
+        	System.out.println("INFRARED SENSOR:");
+            for (double i : meas) {
+                System.out.println(i);
+            }
         }
 
         @Override
@@ -117,13 +119,15 @@ public class Robot {
 
         @Override
         public void onSense(String s, HashMap<String, Double> map) {
-//            System.out.println(s);
-//
-//            Set o = map.keySet();
-//            for ( Object a : o) {
-//                System.out.println(a);
-//                System.out.println(map.get(a));
-//            }
+        	System.out.println("DISTANCE SENSOR:");
+
+            System.out.println(s);
+
+            Set o = map.keySet();
+            for ( Object a : o) {
+                System.out.println(a);
+                System.out.println(map.get(a));
+            }
         }
 
     }
@@ -133,8 +137,8 @@ public class Robot {
 
         try {
             poseSens.sense();
-//            irSens.sense();
-//            distSens.sense();
+            irSens.sense();
+            distSens.sense();
 
             HashMap<String, Double> map = new HashMap<>();
             map.put("linVel", 1.);
