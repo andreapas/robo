@@ -50,14 +50,14 @@ public class Robot {
 
         @Override
         public void onSense(double meas) {
-        	System.out.println("test1");
+        	System.out.println("test2");
 
             throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
 
         @Override
         public void onSense(double[] meas) {
-        	System.out.println("test1");
+        	System.out.println("test3");
 
 //            for (double i : meas) {
 //                System.out.println(i);
@@ -66,6 +66,7 @@ public class Robot {
 
         @Override
         public void onSense(String s, HashMap<String, Double> map) {
+        	System.out.println("test4");
             throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
 
@@ -139,7 +140,7 @@ public class Robot {
             map.put("linVel", 1.);
             map.put("angVel", 1.);
             speedAct.act(map);
-
+            
         } catch (IOException ex) {
             Logger.getLogger(Robot.class.getName()).log(Level.SEVERE, null, ex);
         }
