@@ -19,8 +19,12 @@ public class ProxyMovement {
 			movement= new StraightRun();
 		}else if(movementType.equals(Movements.STOP)){
 			movement=new StopMovement();
-		}else if(movementType.equals(Movements.TURN_ON_YOURSELF)){
-			movement=new RotateOnYourSelf();
+		}else if(movementType.equals(Movements.ROTATE_LEFT)){
+			movement=new RotateLeft();
+		}else if(movementType.equals(Movements.ROTATE_RIGHT)){
+			movement=new RotateRight();
+		}else if(movementType.equals(Movements.BACK)){
+			movement=new GoBack();
 		}
 	}
 }
