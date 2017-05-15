@@ -34,14 +34,50 @@ public class Mediator {
 		return med;
 	}
 	
-	public void runRobot(String name)throws IOException{
+	public void runRobot(String name)throws Exception{
 		initializePhase(name);
-		initializeGoalCoordinates();
+		initializeGCoord2();
 		movement.selectMovementType(ProxyMovement.STOP);
 		speedAct.act(movement.move());
 
 	}
 	
+	private void initializeGCoord2()throws Exception{
+		poseSens.sense();
+		distSens.sense();
+		Coordinates a= new Coordinates(positionLearned[1],positionLearned[2],positionLearned[4], distanceFromGoal);
+		movement.selectMovementType(ProxyMovement.STRAIGHT_MOVEMENT);
+		speedAct.act(movement.move());
+		Coordinates tmp=new Coordinates(positionLearned[1],positionLearned[2],positionLearned[4], distanceFromGoal);
+		Coordinates b= new Coordinates(0.0, 0.0, 0.0, 0.0);
+		Coordinates c= new Coordinates(0.0, 0.0, 0.0, 0.0);
+		int i=1;
+		while (true) {
+			poseSens.sense();
+			distSens.sense();
+			if(newCoords(tmp, 2)&&i==1){
+				b=new Coordinates(positionLearned[1],positionLearned[2],positionLearned[4], distanceFromGoal);
+				tmp=new Coordinates(positionLearned[1],positionLearned[2],positionLearned[4], distanceFromGoal);
+				movement.selectMovementType(ProxyMovement.TURN_ON_YOURSELF);
+				speedAct.act(movement.move());
+				i=2;
+			}else if(newCoords(tmp, (float)0.8)&&i==2){
+				c=new Coordinates(positionLearned[1],positionLearned[2],positionLearned[4], distanceFromGoal);
+				break;
+			}	
+		}
+		
+		Coordinates goal=GoalCoordinatesCalculator.triangulateThis(a,b,c);
+		System.out.println(goal);
+		
+	}
+	private boolean newCoords(Coordinates last, float soglia) throws IOException{
+		poseSens.sense();
+		distSens.sense();
+		if(Math.abs(last.getX()-positionLearned[1])>soglia||Math.abs(last.getY()-positionLearned[2])>soglia)
+			return true;
+		return false;
+	}
 	private void initializeGoalCoordinates() throws IOException{
 		poseSens.sense();
 		distSens.sense();
@@ -57,7 +93,7 @@ public class Mediator {
 		while(!goalCoordinates.isValid()){
 //			System.out.println("GIROOOO");
 //			movement.move().forEach((key, value)-> System.out.println(key+" "+value));
-			speedAct.act(movement.move());
+//			speedAct.act(movement.move());
 			newInfos(previousPosition, newPosition);
 			if(newPosition.getDistanceFromGoal()<previousPosition.getDistanceFromGoal()&&!amIDecreasing){
 				max.setCoordinates(previousPosition.getX(), previousPosition.getY(), previousPosition.getM(), previousPosition.getDistanceFromGoal());
