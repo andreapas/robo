@@ -28,6 +28,11 @@ public class Mediator {
     
     private double[] positionLearned;
     private double distanceFromGoal;
+    private double[] centralInfo;
+    private double[] leftInfo;
+    private double[] rightInfo;
+    private double[] backInfo;
+    
     private Coordinates goalCoordinates=new Coordinates(0.0, 0.0, 0.0, 0.0);
 
 	public static Mediator getMed() {
@@ -40,6 +45,43 @@ public class Mediator {
 		movement.selectMovementType(Movements.STOP);
 		speedAct.act(movement.move());
 
+	}
+	public void goStraight(){
+		
+	}
+	public void goBack(){
+		
+	}
+	public void rotateRight(){
+		
+	}
+	public void rotateLeft(){
+		
+	}
+	public double[] getPositionLearned() throws Exception{
+		poseSens.sense();
+		return positionLearned;
+	}
+	public double getDistanceFromGoal() throws Exception{
+		distSens.sense();
+		return distanceFromGoal;
+	}
+
+	public double[] getBackInfo() throws Exception{
+		backIr.sense();
+		return backInfo;
+	}
+	public double[] getCentralInfo() throws Exception{
+		centralIr.sense();
+		return centralInfo;
+	}
+	public double[] getLeftInfo() throws Exception{
+		leftIr.sense();
+		return leftInfo;
+	}
+	public double[] getRightInfo() throws Exception{
+		rightIr.sense();
+		return rightInfo;
 	}
 	
 	private void initializeGCoord2()throws Exception{
@@ -130,6 +172,7 @@ public class Mediator {
 			
 			@Override
 			public void onSense(double[] meas) {
+				centralInfo=meas;
 				for (double measure : meas) {
 					if(measure<=1.5){
 //						System.out.println(measure);
@@ -156,6 +199,7 @@ public class Mediator {
 			
 			@Override
 			public void onSense(double[] meas) {
+				leftInfo=meas;
 				for (double measure : meas) {
 					if(measure<=1.5){
 //						System.out.println(measure);
@@ -182,6 +226,7 @@ public class Mediator {
 			
 			@Override
 			public void onSense(double[] meas) {
+				rightInfo=meas;
 				for (double measure : meas) {
 					if(measure<=1.5){
 //						System.out.println(measure);
@@ -208,6 +253,7 @@ public class Mediator {
 			
 			@Override
 			public void onSense(double[] meas) {
+				backInfo=meas;
 				for (double measure : meas) {
 					if(measure<=1.5){
 //						System.out.println(measure);
