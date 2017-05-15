@@ -41,6 +41,7 @@ public class Mediator {
 
 	public void runRobot(String name) throws Exception {
 		initializePhase(name);
+//		initializeGoalCoordinates();
 		initializeGCoord2();
 		movement.selectMovementType(Movements.STOP);
 		speedAct.act(movement.move());
@@ -53,16 +54,20 @@ public class Mediator {
 	}
 
 	public void goBack() throws Exception {
-		movement.selectMovementType(Movements.STOP);
+		movement.selectMovementType(Movements.BACK);
 		speedAct.act(movement.move());
 	}
 
 	public void rotateRight() throws Exception {
-		movement.selectMovementType(Movements.ROTATE_LEFT);
+		movement.selectMovementType(Movements.ROTATE_RIGHT);
 		speedAct.act(movement.move());
 	}
 	public void rotateLeft() throws Exception {
 		movement.selectMovementType(Movements.ROTATE_LEFT);
+		speedAct.act(movement.move());
+	}
+	public void stop() throws Exception {
+		movement.selectMovementType(Movements.STOP);
 		speedAct.act(movement.move());
 	}
 	public double[] getPositionLearned() throws Exception {
@@ -99,17 +104,17 @@ public class Mediator {
 	private void initializeGCoord2() throws Exception {
 		poseSens.sense();
 		distSens.sense();
-		Coordinates a = new Coordinates(positionLearned[1], positionLearned[2], positionLearned[4], distanceFromGoal);
+		Coordinates a = new Coordinates(positionLearned[1], positionLearned[2], positionLearned[6], distanceFromGoal);
 		movement.selectMovementType(Movements.STRAIGHT_MOVEMENT);
 		speedAct.act(movement.move());
-		Coordinates tmp = new Coordinates(positionLearned[1], positionLearned[2], positionLearned[4], distanceFromGoal);
+		Coordinates tmp = new Coordinates(positionLearned[1], positionLearned[2], positionLearned[6], distanceFromGoal);
 		Coordinates b = new Coordinates(0.0, 0.0, 0.0, 0.0);
 		Coordinates c = new Coordinates(0.0, 0.0, 0.0, 0.0);
 		int i = 1;
 		while (true) {
-			if (checkCoordsOnSameAxis(tmp, 1)) {
-				b = new Coordinates(positionLearned[1], positionLearned[2], positionLearned[4], distanceFromGoal);
-				tmp = new Coordinates(positionLearned[1], positionLearned[2], positionLearned[4], distanceFromGoal);
+			if (checkCoordsOnSameAxis(tmp, 2)) {
+				b = new Coordinates(positionLearned[1], positionLearned[2], positionLearned[6], distanceFromGoal);
+				tmp = new Coordinates(positionLearned[1], positionLearned[2], positionLearned[6], distanceFromGoal);
 				movement.selectMovementType(Movements.ROTATE_LEFT);
 				speedAct.act(movement.move());
 				break;
@@ -124,8 +129,8 @@ public class Mediator {
 		while (true) {
 			poseSens.sense();
 			distSens.sense();
-			if (checkCoordsOnSameAxis(tmp, 1)) {
-				c = new Coordinates(positionLearned[1], positionLearned[2], positionLearned[4], distanceFromGoal);
+			if (checkCoordsOnSameAxis(tmp, 2)) {
+				c = new Coordinates(positionLearned[1], positionLearned[2], positionLearned[6], distanceFromGoal);
 				break;
 			}
 
@@ -138,9 +143,9 @@ public class Mediator {
 		poseSens.sense();
 		distSens.sense();
 		double m=refer.getM();
-//		System.out.println("degrees: "+Math.atan(Math.abs(positionLearned[4]-m))+" m: "+m+ " new Val= "+ positionLearned[4]);
+		System.out.println("degrees: "+(Math.abs(Math.abs(positionLearned[6])-Math.abs(m)))+" m: "+Math.abs(m)+ " new Val= "+ Math.abs(positionLearned[6]));
 		System.out.println("calculated: "+(degrees*Math.PI/180.0));
-		if(Math.abs(Math.atan(m))+Math.abs(positionLearned[4])>=(degrees*Math.PI/180.0))
+		if(Math.abs(Math.abs(positionLearned[6])-Math.abs(m))>=(degrees*Math.PI/180.0))
 			return true;
 		return false;
 		
@@ -157,13 +162,13 @@ public class Mediator {
 	private void initializeGoalCoordinates() throws IOException {
 		poseSens.sense();
 		distSens.sense();
-		Coordinates previousPosition = new Coordinates(positionLearned[1], positionLearned[2], positionLearned[4],
+		Coordinates previousPosition = new Coordinates(positionLearned[1], positionLearned[2], positionLearned[6],
 				distanceFromGoal);
 		movement.selectMovementType(Movements.ROTATE_LEFT);
 		speedAct.act(movement.move());
 		poseSens.sense();
 		distSens.sense();
-		Coordinates newPosition = new Coordinates(positionLearned[1], positionLearned[2], positionLearned[4],
+		Coordinates newPosition = new Coordinates(positionLearned[1], positionLearned[2], positionLearned[6],
 				distanceFromGoal);
 		Coordinates min = new Coordinates(0.0, 0.0, 0.0, 0.0);
 		Coordinates max = new Coordinates(0.0, 0.0, 0.0, 0.0);
@@ -196,7 +201,7 @@ public class Mediator {
 		poseSens.sense();
 		distSens.sense();
 		older.setCoordinates(newer.getX(), newer.getY(), newer.getM(), newer.getDistanceFromGoal());
-		newer.setCoordinates(positionLearned[1], positionLearned[2], positionLearned[4], distanceFromGoal);
+		newer.setCoordinates(positionLearned[1], positionLearned[2], positionLearned[6], distanceFromGoal);
 		// System.out.println("Sensed coord: "+newer.toString());
 
 	}

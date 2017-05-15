@@ -45,7 +45,7 @@ public class GoalCoordinatesCalculator {
  		c1 Coordinates [x=3.8454885482788086, y=6.7290472984313965, m=0.006659831386059523, distanceFromGoal=17.825885772705078]
 	 */
 	public static Coordinates triangulateThis(Coordinates a, Coordinates b, Coordinates c){
-		System.out.println("\n a "+a+"\n b "+b+"\n c "+c);
+		//System.out.println("\n a "+a+"\n b "+b+"\n c "+c);
 		double x= ((squareR.apply(a)-squareR.apply(b)-squareX.apply(a)+squareX.apply(b)-squareY.apply(a)+squareY.apply(b))*
 				(-2*b.getX()+2*c.getX())-(squareR.apply(b)-squareR.apply(c)-squareX.apply(b)+squareX.apply(c)-squareY.apply(b)+squareY.apply(c))*(-2*a.getX()+2*b.getX()))
 				/

@@ -7,8 +7,8 @@ public class GoBack implements IMovement {
 	private final HashMap<String, Double> run= new HashMap<>();
 
 	public GoBack() {
-		run.put("linVel", 0.0);
-        run.put("angVel", 1.0);
+		run.put("linVel", -1.5);
+        run.put("angVel", 0.0);
 	}
 	
 	@Override
