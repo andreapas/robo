@@ -4,10 +4,6 @@ import java.util.HashMap;
 
 public class ProxyMovement {
 
-	
-	public static String STRAIGHT_MOVEMENT="go_straight";
-	public static String STOP="stop";
-	public static String TURN_ON_YOURSELF="rotate";
 	private IMovement movement;
 	
 	public ProxyMovement() {
@@ -19,11 +15,11 @@ public class ProxyMovement {
 	}
 	
 	public void selectMovementType(String movementType){
-		if(movementType.equals(STRAIGHT_MOVEMENT)){
+		if(movementType.equals(Movements.STRAIGHT_MOVEMENT)){
 			movement= new StraightRun();
-		}else if(movementType.equals(STOP)){
+		}else if(movementType.equals(Movements.STOP)){
 			movement=new StopMovement();
-		}else if(movementType.equals(TURN_ON_YOURSELF)){
+		}else if(movementType.equals(Movements.TURN_ON_YOURSELF)){
 			movement=new RotateOnYourSelf();
 		}
 	}

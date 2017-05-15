@@ -2,10 +2,10 @@ package algorithm.mediator;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Set;
 
 import algorithm.Coordinates;
 import algorithm.GoalCoordinatesCalculator;
+import algorithm.proxyMovements.Movements;
 import algorithm.proxyMovements.ProxyMovement;
 import sensorsActuators.DistanceSensor;
 import sensorsActuators.IrSensor;
@@ -37,16 +37,16 @@ public class Mediator {
 	public void runRobot(String name)throws Exception{
 		initializePhase(name);
 		initializeGCoord2();
-		movement.selectMovementType(ProxyMovement.STOP);
+		movement.selectMovementType(Movements.STOP);
 		speedAct.act(movement.move());
 
 	}
 	
 	private void initializeGCoord2()throws Exception{
 		poseSens.sense();
-		distSens.sense();
+		distSens.sense();	
 		Coordinates a= new Coordinates(positionLearned[1],positionLearned[2],positionLearned[4], distanceFromGoal);
-		movement.selectMovementType(ProxyMovement.STRAIGHT_MOVEMENT);
+		movement.selectMovementType(Movements.STRAIGHT_MOVEMENT);
 		speedAct.act(movement.move());
 		Coordinates tmp=new Coordinates(positionLearned[1],positionLearned[2],positionLearned[4], distanceFromGoal);
 		Coordinates b= new Coordinates(0.0, 0.0, 0.0, 0.0);
@@ -58,7 +58,7 @@ public class Mediator {
 			if(newCoords(tmp, 2)&&i==1){
 				b=new Coordinates(positionLearned[1],positionLearned[2],positionLearned[4], distanceFromGoal);
 				tmp=new Coordinates(positionLearned[1],positionLearned[2],positionLearned[4], distanceFromGoal);
-				movement.selectMovementType(ProxyMovement.TURN_ON_YOURSELF);
+				movement.selectMovementType(Movements.TURN_ON_YOURSELF);
 				speedAct.act(movement.move());
 				i=2;
 			}else if(newCoords(tmp, (float)0.8)&&i==2){
@@ -82,7 +82,7 @@ public class Mediator {
 		poseSens.sense();
 		distSens.sense();
 		Coordinates previousPosition= new Coordinates(positionLearned[1],positionLearned[2],positionLearned[4], distanceFromGoal);
-		movement.selectMovementType(ProxyMovement.TURN_ON_YOURSELF);
+		movement.selectMovementType(Movements.TURN_ON_YOURSELF);
 		speedAct.act(movement.move());
 		poseSens.sense();
 		distSens.sense();
