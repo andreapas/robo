@@ -8,7 +8,7 @@ private final HashMap<String, Double> run= new HashMap<>();
 	//lin 0.1 ang 0.8
 	public RotateLeft() {
 		run.put("linVel", 0.0);
-        run.put("angVel", 1.0);
+        run.put("angVel", 0.5);
 	}
 	
 	@Override

@@ -3,6 +3,10 @@ package algorithm.mediator;
 import java.io.IOException;
 import java.util.HashMap;
 
+import javax.sound.midi.Soundbank;
+
+import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
+
 import algorithm.Coordinates;
 import algorithm.GoalCoordinatesCalculator;
 import algorithm.proxyMovements.Movements;
@@ -112,30 +116,46 @@ public class Mediator {
 		Coordinates c = new Coordinates(0.0, 0.0, 0.0, 0.0);
 		int i = 1;
 		while (true) {
-			if (checkCoordsOnSameAxis(tmp, 2)) {
+			if (checkCoordsOnSameAxis(tmp, 0.5)) {
 				b = new Coordinates(positionLearned[1], positionLearned[2], positionLearned[6], distanceFromGoal);
 				tmp = new Coordinates(positionLearned[1], positionLearned[2], positionLearned[6], distanceFromGoal);
-				movement.selectMovementType(Movements.ROTATE_LEFT);
+				movement.selectMovementType(Movements.ROTATE_RIGHT);
 				speedAct.act(movement.move());
 				break;
 			}
 
 		}
 		while(!rotationCompleted(tmp, 90)){
-			System.out.println(rotationCompleted(tmp, 90));
+			
 		}
 		movement.selectMovementType(Movements.STRAIGHT_MOVEMENT);
 		speedAct.act(movement.move());
 		while (true) {
 			poseSens.sense();
 			distSens.sense();
-			if (checkCoordsOnSameAxis(tmp, 2)) {
+			if (checkCoordsOnSameAxis(tmp, 0.5)) {
 				c = new Coordinates(positionLearned[1], positionLearned[2], positionLearned[6], distanceFromGoal);
 				break;
 			}
 
 		}
-		Coordinates goal = GoalCoordinatesCalculator.triangulateThis(a, b, c);
+		Coordinates goal;
+		if(a.getY()==b.getY())
+			if(a.getX()>b.getX())
+				goal = GoalCoordinatesCalculator.trilaterateGoal(b,a,c);
+			else
+				goal = GoalCoordinatesCalculator.trilaterateGoal(a,b,c);
+		else if(a.getY()==c.getY())
+			if(a.getX()>c.getX())
+				goal = GoalCoordinatesCalculator.trilaterateGoal(c,a,b);
+			else
+				goal = GoalCoordinatesCalculator.trilaterateGoal(a,c,b);
+		else
+			if(b.getX()>c.getX())
+				goal = GoalCoordinatesCalculator.trilaterateGoal(c,b,a);
+			else
+				goal = GoalCoordinatesCalculator.trilaterateGoal(c,a,b);
+		
 		System.out.println(goal);
 	}
 
@@ -151,7 +171,7 @@ public class Mediator {
 		
 	}
 	
-	private boolean checkCoordsOnSameAxis(Coordinates last, float soglia) throws IOException {
+	private boolean checkCoordsOnSameAxis(Coordinates last, double soglia) throws IOException {
 		poseSens.sense();
 		distSens.sense();
 		if (Math.abs(last.getX() - positionLearned[1]) > soglia || Math.abs(last.getY() - positionLearned[2]) > soglia)
@@ -340,7 +360,11 @@ public class Mediator {
 		distSens.setSensorListener(new SensorListener() {
 			@Override
 			public void onSense(String s, HashMap<String, Double> map) {
+				try{
 				distanceFromGoal = map.get("target");
+				}catch (NullPointerException ex){
+					System.out.println(map);
+				}
 				// System.out.println("DISTANCE SENSOR:");
 				//
 				// System.out.println(s);
