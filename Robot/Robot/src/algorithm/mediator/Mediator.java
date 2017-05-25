@@ -120,7 +120,7 @@ public class Mediator {
 	}
 
 	private boolean isEnoughSpaceAround() {
-
+		
 		return true;
 	}
 
