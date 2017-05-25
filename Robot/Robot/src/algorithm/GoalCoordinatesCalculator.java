@@ -63,7 +63,6 @@ public class GoalCoordinatesCalculator {
 	
 	
 	
-	
 	public static Coordinates getGoalCoordinates(Coordinates min, Coordinates max) {
 
 		k = (min.getY() - max.getY()) / (min.getX() / max.getX());

@@ -30,7 +30,7 @@ public class Mediator {
 	private String ip = "192.168.1.72";
 	private ProxyMovement movement = new ProxyMovement();
 
-	private double[] positionLearned;
+	private double[] actualPosition;
 	private double distanceFromGoal;
 	private double[] centralInfo;
 	private double[] leftInfo;
@@ -45,9 +45,11 @@ public class Mediator {
 
 	public void runRobot(String name) throws Exception {
 		initializePhase(name);
-//		initializeGoalCoordinates();
-		initializeGCoord2();
-		movement.selectMovementType(Movements.STOP);
+		if (isEnoughSpaceAround())
+			initializeGoalCoordinates();
+		else
+			// TODO: do something else;
+			movement.selectMovementType(Movements.STOP);
 		speedAct.act(movement.move());
 
 	}
@@ -62,21 +64,34 @@ public class Mediator {
 		speedAct.act(movement.move());
 	}
 
-	public void rotateRight() throws Exception {
-		movement.selectMovementType(Movements.ROTATE_RIGHT);
+	public void rotateOf(double relative, String direction) throws Exception {
+		poseSens.sense();
+		double actualAngle = actualPosition[6];
+		movement.selectMovementType(direction);
 		speedAct.act(movement.move());
+		poseSens.sense();
+		while (actualPosition[6] != (actualAngle + relative)) {
+			poseSens.sense();
+		}
+		stop();
 	}
-	public void rotateLeft() throws Exception {
-		movement.selectMovementType(Movements.ROTATE_LEFT);
+	public void rotateTo(double absoluteAngle, String direction) throws Exception {
+		movement.selectMovementType(direction);
 		speedAct.act(movement.move());
+		poseSens.sense();
+		while (actualPosition[6] != absoluteAngle) {
+			poseSens.sense();
+		}
+		stop();
 	}
 	public void stop() throws Exception {
 		movement.selectMovementType(Movements.STOP);
 		speedAct.act(movement.move());
 	}
-	public double[] getPositionLearned() throws Exception {
+
+	public double[] getActualPosition() throws Exception {
 		poseSens.sense();
-		return positionLearned;
+		return actualPosition;
 	}
 
 	public double getDistanceFromGoal() throws Exception {
@@ -104,29 +119,32 @@ public class Mediator {
 		return rightInfo;
 	}
 
-	
-	private void initializeGCoord2() throws Exception {
+	private boolean isEnoughSpaceAround() {
+
+		return true;
+	}
+
+	private void initializeGoalCoordinates() throws Exception {
 		poseSens.sense();
 		distSens.sense();
-		Coordinates a = new Coordinates(positionLearned[1], positionLearned[2], positionLearned[6], distanceFromGoal);
+		Coordinates a = new Coordinates(actualPosition[1], actualPosition[2], actualPosition[6], distanceFromGoal);
 		movement.selectMovementType(Movements.STRAIGHT_MOVEMENT);
 		speedAct.act(movement.move());
-		Coordinates tmp = new Coordinates(positionLearned[1], positionLearned[2], positionLearned[6], distanceFromGoal);
+		Coordinates tmp = new Coordinates(actualPosition[1], actualPosition[2], actualPosition[6], distanceFromGoal);
 		Coordinates b = new Coordinates(0.0, 0.0, 0.0, 0.0);
 		Coordinates c = new Coordinates(0.0, 0.0, 0.0, 0.0);
 		int i = 1;
 		while (true) {
 			if (checkCoordsOnSameAxis(tmp, 0.5)) {
-				b = new Coordinates(positionLearned[1], positionLearned[2], positionLearned[6], distanceFromGoal);
-				tmp = new Coordinates(positionLearned[1], positionLearned[2], positionLearned[6], distanceFromGoal);
+				b = new Coordinates(actualPosition[1], actualPosition[2], actualPosition[6], distanceFromGoal);
+				tmp = new Coordinates(actualPosition[1], actualPosition[2], actualPosition[6], distanceFromGoal);
 				movement.selectMovementType(Movements.ROTATE_RIGHT);
 				speedAct.act(movement.move());
 				break;
 			}
 
 		}
-		while(!rotationCompleted(tmp, 90)){
-			
+		while (!rotationCompleted(tmp, 90)) {
 		}
 		movement.selectMovementType(Movements.STRAIGHT_MOVEMENT);
 		speedAct.act(movement.move());
@@ -134,96 +152,37 @@ public class Mediator {
 			poseSens.sense();
 			distSens.sense();
 			if (checkCoordsOnSameAxis(tmp, 0.5)) {
-				c = new Coordinates(positionLearned[1], positionLearned[2], positionLearned[6], distanceFromGoal);
+				c = new Coordinates(actualPosition[1], actualPosition[2], actualPosition[6], distanceFromGoal);
 				break;
 			}
 
 		}
+		System.out.println(a + "\n" + b + "\n" + c);
 		Coordinates goal;
-		if(a.getY()==b.getY())
-			if(a.getX()>b.getX())
-				goal = GoalCoordinatesCalculator.trilaterateGoal(b,a,c);
-			else
-				goal = GoalCoordinatesCalculator.trilaterateGoal(a,b,c);
-		else if(a.getY()==c.getY())
-			if(a.getX()>c.getX())
-				goal = GoalCoordinatesCalculator.trilaterateGoal(c,a,b);
-			else
-				goal = GoalCoordinatesCalculator.trilaterateGoal(a,c,b);
-		else
-			if(b.getX()>c.getX())
-				goal = GoalCoordinatesCalculator.trilaterateGoal(c,b,a);
-			else
-				goal = GoalCoordinatesCalculator.trilaterateGoal(c,a,b);
-		
+		goal = GoalCoordinatesCalculator.lastTry(a, b, c);
 		System.out.println(goal);
 	}
 
-	private boolean rotationCompleted(Coordinates refer, double degrees) throws Exception{
+	private boolean rotationCompleted(Coordinates refer, double degrees) throws Exception {
 		poseSens.sense();
 		distSens.sense();
-		double m=refer.getM();
-		System.out.println("degrees: "+(Math.abs(Math.abs(positionLearned[6])-Math.abs(m)))+" m: "+Math.abs(m)+ " new Val= "+ Math.abs(positionLearned[6]));
-		System.out.println("calculated: "+(degrees*Math.PI/180.0));
-		if(Math.abs(Math.abs(positionLearned[6])-Math.abs(m))>=(degrees*Math.PI/180.0))
+		double m = refer.getM();
+		// System.out.println("degrees:
+		// "+(Math.abs(Math.abs(positionLearned[6])-Math.abs(m)))+" m:
+		// "+Math.abs(m)+ " new Val= "+ Math.abs(positionLearned[6]));
+		// System.out.println("calculated: "+(degrees*Math.PI/180.0));
+		if (Math.abs(Math.abs(actualPosition[6]) - Math.abs(m)) >= (degrees * Math.PI / 180.0))
 			return true;
 		return false;
-		
+
 	}
-	
+
 	private boolean checkCoordsOnSameAxis(Coordinates last, double soglia) throws IOException {
 		poseSens.sense();
 		distSens.sense();
-		if (Math.abs(last.getX() - positionLearned[1]) > soglia || Math.abs(last.getY() - positionLearned[2]) > soglia)
+		if (Math.abs(last.getX() - actualPosition[1]) > soglia || Math.abs(last.getY() - actualPosition[2]) > soglia)
 			return true;
 		return false;
-	}
-
-	private void initializeGoalCoordinates() throws IOException {
-		poseSens.sense();
-		distSens.sense();
-		Coordinates previousPosition = new Coordinates(positionLearned[1], positionLearned[2], positionLearned[6],
-				distanceFromGoal);
-		movement.selectMovementType(Movements.ROTATE_LEFT);
-		speedAct.act(movement.move());
-		poseSens.sense();
-		distSens.sense();
-		Coordinates newPosition = new Coordinates(positionLearned[1], positionLearned[2], positionLearned[6],
-				distanceFromGoal);
-		Coordinates min = new Coordinates(0.0, 0.0, 0.0, 0.0);
-		Coordinates max = new Coordinates(0.0, 0.0, 0.0, 0.0);
-		boolean amIDecreasing = newPosition.getDistanceFromGoal() < previousPosition.getDistanceFromGoal();
-		while (!goalCoordinates.isValid()) {
-			// System.out.println("GIROOOO");
-			// movement.move().forEach((key, value)-> System.out.println(key+"
-			// "+value));
-			// speedAct.act(movement.move());
-			newInfos(previousPosition, newPosition);
-			if (newPosition.getDistanceFromGoal() < previousPosition.getDistanceFromGoal() && !amIDecreasing) {
-				max.setCoordinates(previousPosition.getX(), previousPosition.getY(), previousPosition.getM(),
-						previousPosition.getDistanceFromGoal());
-				// System.out.println("MAX found \n"+max.toString());
-				amIDecreasing = true;
-			} else if (newPosition.getDistanceFromGoal() > previousPosition.getDistanceFromGoal() && amIDecreasing) {
-				min.setCoordinates(previousPosition.getX(), previousPosition.getY(), previousPosition.getM(),
-						previousPosition.getDistanceFromGoal());
-				// System.out.println("MIN found \n"+min.toString());
-				amIDecreasing = false;
-			}
-			if (min.isValid() && max.isValid()) {
-				goalCoordinates = GoalCoordinatesCalculator.getGoalCoordinates(min, max);
-			}
-		}
-		System.out.println(goalCoordinates.toString());
-	}
-
-	private void newInfos(Coordinates older, Coordinates newer) throws IOException {
-		poseSens.sense();
-		distSens.sense();
-		older.setCoordinates(newer.getX(), newer.getY(), newer.getM(), newer.getDistanceFromGoal());
-		newer.setCoordinates(positionLearned[1], positionLearned[2], positionLearned[6], distanceFromGoal);
-		// System.out.println("Sensed coord: "+newer.toString());
-
 	}
 
 	private void initializePhase(String name) throws IOException {
@@ -344,7 +303,7 @@ public class Mediator {
 
 			@Override
 			public void onSense(double[] meas) {
-				positionLearned = meas;
+				actualPosition = meas;
 			}
 
 			@Override
@@ -360,9 +319,9 @@ public class Mediator {
 		distSens.setSensorListener(new SensorListener() {
 			@Override
 			public void onSense(String s, HashMap<String, Double> map) {
-				try{
-				distanceFromGoal = map.get("target");
-				}catch (NullPointerException ex){
+				try {
+					distanceFromGoal = map.get("target");
+				} catch (NullPointerException ex) {
 					System.out.println(map);
 				}
 				// System.out.println("DISTANCE SENSOR:");
