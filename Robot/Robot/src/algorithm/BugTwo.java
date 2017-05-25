@@ -5,9 +5,8 @@ import algorithm.mediator.Mediator;
 public class BugTwo {
 	
 	Mediator mediator = null;
-	boolean motion = true;
-	boolean boundary = false;
-	boolean goal = false;
+	Position hitPosition;
+	boolean justHit;
 	
 	public BugTwo() {
 		
@@ -19,6 +18,7 @@ public class BugTwo {
 		while(true) {
 			
 			if(isGoalReached()) {
+				//raggiunto goal
 				break;
 			}
 			
@@ -42,8 +42,45 @@ public class BugTwo {
 			}
 			
 		}
+	}
+	
+	private void leftBoundaryFollowing() {
 		
-		System.out.println("Finito, yeeeeee!");
+        try {
+			hitPosition = mediator.getActualPosition();
+	        justHit = true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		while(true) {
+			
+			try {
+
+				if(isGoalReached()) {
+					//raggiunto goal
+					break;
+				}
+				
+				if(justHit == false && hitPosition.equals(mediator.getActualPosition())) {
+					//fallimento
+					break;
+				}
+				
+				if(justHit) {
+					if (!mediator.getActualPosition().equals(hitPosition)) {
+						justHit = false;
+					}
+				}
+				
+				//Qui ci va il boundary ecc...
+				
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
 	}
 	
 	private boolean isGoalReached() {
@@ -55,27 +92,5 @@ public class BugTwo {
 			e.printStackTrace();
 		}
 		return false;
-	}
-
-	private boolean motionToGoal() {
-	
-		try {
-			
-			mediator.goStraight();
-			if (mediator.getRightInfo()[10] < 2.0 || mediator.getLeftInfo()[10] < 2.0 || mediator.getCentralInfo()[10] < 2.0) {
-				return false;
-			}
-		
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		return true;
-	}
-	
-	private boolean boundaryFollowing() {
-		
-		return true;
 	}
 }
