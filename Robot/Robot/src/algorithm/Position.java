@@ -1,4 +1,4 @@
-package algorithm.proxyMovements;
+package algorithm;
 
 public class Position {
 

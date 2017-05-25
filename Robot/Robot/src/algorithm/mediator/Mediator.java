@@ -5,8 +5,9 @@ import java.util.HashMap;
 
 import algorithm.Coordinates;
 import algorithm.GoalCoordinatesCalculator;
+import algorithm.Position;
+import algorithm.SensorInfo;
 import algorithm.proxyMovements.Movements;
-import algorithm.proxyMovements.Position;
 import algorithm.proxyMovements.ProxyMovement;
 import sensorsActuators.DistanceSensor;
 import sensorsActuators.IrSensor;
@@ -29,10 +30,10 @@ public class Mediator {
 
 	private Position actualPosition= new Position();
 	private double distanceFromGoal;
-	private double[] centralInfo;
-	private double[] leftInfo;
-	private double[] rightInfo;
-	private double[] backInfo;
+	private SensorInfo centralInfo= new SensorInfo();
+	private SensorInfo leftInfo= new SensorInfo();
+	private SensorInfo rightInfo= new SensorInfo();
+	private SensorInfo backInfo= new SensorInfo();
 
 	private Coordinates goalCoordinates = new Coordinates(0.0, 0.0, 0.0, 0.0);
 
@@ -96,22 +97,22 @@ public class Mediator {
 		return distanceFromGoal;
 	}
 
-	public double[] getBackInfo() throws Exception {
+	public SensorInfo getBackInfo() throws Exception {
 		backIr.sense();
 		return backInfo;
 	}
 
-	public double[] getCentralInfo() throws Exception {
+	public SensorInfo getCentralInfo() throws Exception {
 		centralIr.sense();
 		return centralInfo;
 	}
 
-	public double[] getLeftInfo() throws Exception {
+	public SensorInfo getLeftInfo() throws Exception {
 		leftIr.sense();
 		return leftInfo;
 	}
 
-	public double[] getRightInfo() throws Exception {
+	public SensorInfo getRightInfo() throws Exception {
 		rightIr.sense();
 		return rightInfo;
 	}
@@ -194,7 +195,7 @@ public class Mediator {
 
 			@Override
 			public void onSense(double[] meas) {
-				centralInfo = meas;
+				centralInfo.setStreamSensed(meas);
 				for (double measure : meas) {
 					if (measure <= 1.5) {
 						// System.out.println(measure);
@@ -221,7 +222,7 @@ public class Mediator {
 
 			@Override
 			public void onSense(double[] meas) {
-				leftInfo = meas;
+				leftInfo.setStreamSensed(meas);
 				for (double measure : meas) {
 					if (measure <= 1.5) {
 						// System.out.println(measure);
@@ -248,7 +249,7 @@ public class Mediator {
 
 			@Override
 			public void onSense(double[] meas) {
-				rightInfo = meas;
+				rightInfo.setStreamSensed(meas);
 				for (double measure : meas) {
 					if (measure <= 1.5) {
 						// System.out.println(measure);
@@ -275,7 +276,7 @@ public class Mediator {
 
 			@Override
 			public void onSense(double[] meas) {
-				backInfo = meas;
+				backInfo.setStreamSensed(meas);
 				for (double measure : meas) {
 					if (measure <= 1.5) {
 						// System.out.println(measure);
