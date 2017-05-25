@@ -6,34 +6,26 @@ public class Position {
 	private double y;
 	private double radiants;
 
-	public Position(double[] position) {
-		this.x = position[0];
-		this.y = position[1];
-		this.radiants = position[6];
+	public Position() {
 	}
 
 	public double getX() {
 		return x;
 	}
 
-	public void setX(double x) {
-		this.x = x;
-	}
-
 	public double getY() {
 		return y;
 	}
 
-	public void setY(double y) {
-		this.y = y;
-	}
 
 	public double getRadiants() {
 		return radiants;
 	}
 
-	public void setRadiants(double radiants) {
-		this.radiants = radiants;
+	public void setPosition(double[] position) {
+		this.x = position[1];
+		this.y = position[2];
+		this.radiants = position[6];
 	}
 	
 	@Override

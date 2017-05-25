@@ -3,13 +3,10 @@ package algorithm.mediator;
 import java.io.IOException;
 import java.util.HashMap;
 
-import javax.sound.midi.Soundbank;
-
-import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
-
 import algorithm.Coordinates;
 import algorithm.GoalCoordinatesCalculator;
 import algorithm.proxyMovements.Movements;
+import algorithm.proxyMovements.Position;
 import algorithm.proxyMovements.ProxyMovement;
 import sensorsActuators.DistanceSensor;
 import sensorsActuators.IrSensor;
@@ -30,7 +27,7 @@ public class Mediator {
 	private String ip = "192.168.1.72";
 	private ProxyMovement movement = new ProxyMovement();
 
-	private double[] actualPosition;
+	private Position actualPosition= new Position();
 	private double distanceFromGoal;
 	private double[] centralInfo;
 	private double[] leftInfo;
@@ -66,11 +63,11 @@ public class Mediator {
 
 	public void rotateOf(double relative, String direction) throws Exception {
 		poseSens.sense();
-		double actualAngle = actualPosition[6];
+		double actualAngle = actualPosition.getRadiants();
 		movement.selectMovementType(direction);
 		speedAct.act(movement.move());
 		poseSens.sense();
-		while (actualPosition[6] != (actualAngle + relative)) {
+		while (actualPosition.getRadiants() != (actualAngle + relative)) {
 			poseSens.sense();
 		}
 		stop();
@@ -79,7 +76,7 @@ public class Mediator {
 		movement.selectMovementType(direction);
 		speedAct.act(movement.move());
 		poseSens.sense();
-		while (actualPosition[6] != absoluteAngle) {
+		while (actualPosition.getRadiants() != absoluteAngle) {
 			poseSens.sense();
 		}
 		stop();
@@ -89,7 +86,7 @@ public class Mediator {
 		speedAct.act(movement.move());
 	}
 
-	public double[] getActualPosition() throws Exception {
+	public Position getActualPosition() throws Exception {
 		poseSens.sense();
 		return actualPosition;
 	}
@@ -127,17 +124,17 @@ public class Mediator {
 	private void initializeGoalCoordinates() throws Exception {
 		poseSens.sense();
 		distSens.sense();
-		Coordinates a = new Coordinates(actualPosition[1], actualPosition[2], actualPosition[6], distanceFromGoal);
+		Coordinates a = new Coordinates(actualPosition.getX(), actualPosition.getY(), actualPosition.getRadiants(), distanceFromGoal);
 		movement.selectMovementType(Movements.STRAIGHT_MOVEMENT);
 		speedAct.act(movement.move());
-		Coordinates tmp = new Coordinates(actualPosition[1], actualPosition[2], actualPosition[6], distanceFromGoal);
+		Coordinates tmp = new Coordinates(actualPosition.getX(), actualPosition.getY(), actualPosition.getRadiants(), distanceFromGoal);
 		Coordinates b = new Coordinates(0.0, 0.0, 0.0, 0.0);
 		Coordinates c = new Coordinates(0.0, 0.0, 0.0, 0.0);
 		int i = 1;
 		while (true) {
 			if (checkCoordsOnSameAxis(tmp, 0.5)) {
-				b = new Coordinates(actualPosition[1], actualPosition[2], actualPosition[6], distanceFromGoal);
-				tmp = new Coordinates(actualPosition[1], actualPosition[2], actualPosition[6], distanceFromGoal);
+				b = new Coordinates(actualPosition.getX(), actualPosition.getY(), actualPosition.getRadiants(), distanceFromGoal);
+				tmp = new Coordinates(actualPosition.getX(), actualPosition.getY(), actualPosition.getRadiants(), distanceFromGoal);
 				movement.selectMovementType(Movements.ROTATE_RIGHT);
 				speedAct.act(movement.move());
 				break;
@@ -152,7 +149,7 @@ public class Mediator {
 			poseSens.sense();
 			distSens.sense();
 			if (checkCoordsOnSameAxis(tmp, 0.5)) {
-				c = new Coordinates(actualPosition[1], actualPosition[2], actualPosition[6], distanceFromGoal);
+				c = new Coordinates(actualPosition.getX(), actualPosition.getY(), actualPosition.getRadiants(), distanceFromGoal);
 				break;
 			}
 
@@ -171,7 +168,7 @@ public class Mediator {
 		// "+(Math.abs(Math.abs(positionLearned[6])-Math.abs(m)))+" m:
 		// "+Math.abs(m)+ " new Val= "+ Math.abs(positionLearned[6]));
 		// System.out.println("calculated: "+(degrees*Math.PI/180.0));
-		if (Math.abs(Math.abs(actualPosition[6]) - Math.abs(m)) >= (degrees * Math.PI / 180.0))
+		if (Math.abs(Math.abs(actualPosition.getRadiants()) - Math.abs(m)) >= (degrees * Math.PI / 180.0))
 			return true;
 		return false;
 
@@ -180,7 +177,7 @@ public class Mediator {
 	private boolean checkCoordsOnSameAxis(Coordinates last, double soglia) throws IOException {
 		poseSens.sense();
 		distSens.sense();
-		if (Math.abs(last.getX() - actualPosition[1]) > soglia || Math.abs(last.getY() - actualPosition[2]) > soglia)
+		if (Math.abs(last.getX() - actualPosition.getX()) > soglia || Math.abs(last.getY() - actualPosition.getY()) > soglia)
 			return true;
 		return false;
 	}
@@ -303,7 +300,7 @@ public class Mediator {
 
 			@Override
 			public void onSense(double[] meas) {
-				actualPosition = meas;
+				actualPosition.setPosition(meas);
 			}
 
 			@Override
