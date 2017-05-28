@@ -1,12 +1,16 @@
 package algorithm;
 
 import algorithm.mediator.Mediator;
+import algorithm.proxyMovements.Movements;
 
 public class BugTwo {
 	
-	Mediator mediator = null;
-	Position hitPosition;
-	boolean justHit;
+	private Mediator mediator = null;
+	private Position hitPosition;
+	private boolean justHit;
+	private SensorInfo boundarySensorInfo;
+	private String boundaryRotationDirection;
+	private boolean goalReached = false;
 	
 	public BugTwo() {
 		
@@ -14,83 +18,94 @@ public class BugTwo {
 	}
 	
 	public void run() {
-				
+
+		while(!goalReached) {
+			
+			motionToGoal();
+			if(goalReached) break;
+			boundaryFollowing();
+		}
+		
+		System.out.println("Finito!");
+	}
+	
+	private void motionToGoal() {
+		
 		while(true) {
 			
 			if(isGoalReached()) {
-				//raggiunto goal
+				goalReached = true;
 				break;
 			}
 			
-			try {
-				if(mediator.getCentralInfo()[10]<1.8) {
-					if(mediator.getCentralInfo()[0] > mediator.getCentralInfo()[20]) {
-						//leftBoundaryFollowing();
-					} else {
-						//rightBoundaryFollowing();
-					}
-				} else if(mediator.getLeftInfo()[10]<1.8 || mediator.getCentralInfo()[20]<1.8) {
-					//leftBoundaryFollowing();
-				} else if(mediator.getLeftInfo()[10]<1.8 || mediator.getCentralInfo()[20]<1.8) {
-					//rightBoundaryFollowing();
+			if(mediator.getCentralInfo().getMinDistance()<1.8) {
+				if(mediator.getCentralInfo().getRightValue() > mediator.getCentralInfo().getRightValue()) {
+					boundarySensorInfo = mediator.getLeftInfo();
+					boundaryRotationDirection = Movements.ROTATE_RIGHT;
+					break;
 				} else {
-					mediator.goStraight();
+					boundarySensorInfo = mediator.getRightInfo();
+					boundaryRotationDirection = Movements.ROTATE_LEFT;
+					break;
 				}
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			} else if(mediator.getLeftInfo().getMinDistance()<1.8 || mediator.getCentralInfo().getLeftValue()<1.8) {
+				boundarySensorInfo = mediator.getLeftInfo();
+				boundaryRotationDirection = Movements.ROTATE_RIGHT;
+				break;
+			} else if(mediator.getLeftInfo().getMinDistance()<1.8 || mediator.getCentralInfo().getRightValue()<1.8) {
+				boundarySensorInfo = mediator.getRightInfo();
+				boundaryRotationDirection = Movements.ROTATE_LEFT;
+				break;
+			} else {
+				mediator.goStraight();
 			}
 			
 		}
 	}
 	
-	private void leftBoundaryFollowing() {
+	private void boundaryFollowing() {
 		
-        try {
-			hitPosition = mediator.getActualPosition();
-	        justHit = true;
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		hitPosition = mediator.getActualPosition();
+	    justHit = true;
 		
 		while(true) {
 			
-			try {
-
-				if(isGoalReached()) {
-					//raggiunto goal
-					break;
-				}
-				
-				if(justHit == false && hitPosition.equals(mediator.getActualPosition())) {
-					//fallimento
-					break;
-				}
-				
-				if(justHit) {
-					if (!mediator.getActualPosition().equals(hitPosition)) {
-						justHit = false;
-					}
-				}
-				
-				//Qui ci va il boundary ecc...
-				
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			if(isGoalReached()) {
+				goalReached = true;
+				break;
 			}
 			
+			if(justHit == false && hitPosition.equals(mediator.getActualPosition())) {
+				System.out.println("Fallimento");
+				break;
+			}
+			
+			if(/*condizione di uscita*/true) {
+				break;
+			}
+			
+			if(justHit) {
+				if (!mediator.getActualPosition().equals(hitPosition)) {
+					justHit = false;
+				}
+			}
+			
+			if (mediator.getCentralInfo().getMinDistance()<2.0) {
+				mediator.rotateOf(0.3, boundaryRotationDirection);
+			} else if (boundarySensorInfo.getMinDistance()<1.5) {
+				mediator.rotateOf(0.3, boundaryRotationDirection);
+			} else if (boundarySensorInfo.getMinDistance()>1.8) {
+				mediator.rotateOf(0.3, boundaryRotationDirection);
+			} else {
+				mediator.goStraight();
+			}		
 		}
 	}
 	
 	private boolean isGoalReached() {
 		
-		try {
-			if (mediator.getDistanceFromGoal()<1) return true;
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		if (mediator.getDistanceFromGoal()<1) return true;
+
 		return false;
 	}
 }
