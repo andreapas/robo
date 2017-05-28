@@ -2,6 +2,8 @@ package algorithm.mediator;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
 import algorithm.Coordinates;
 import algorithm.GoalCoordinatesCalculator;
@@ -37,6 +39,10 @@ public class Mediator {
 	private SensorInfo backInfo = new SensorInfo();
 
 	private Coordinates goalCoordinates = new Coordinates(0.0, 0.0, 0.0, 0.0);
+	
+	private static BiFunction<Double,Double, Double> pitagora = (a,b) -> Math.sqrt(Math.pow(a, 2)+Math.pow(b, 2));
+	
+
 
 	public static Mediator getMed() {
 		return med;
@@ -53,6 +59,26 @@ public class Mediator {
 
 	}
 
+	public void goStraight(Double distance) {
+		try {
+			poseSens.sense();
+			double actualX=actualPosition.getX();
+			double actualY=actualPosition.getY();
+			
+			movement.selectMovementType(Movements.STRAIGHT_MOVEMENT);
+			speedAct.act(movement.move());
+			poseSens.sense();
+			while (pitagora.apply(actualX-actualPosition.getX(),actualY-actualPosition.getY())<distance) {
+				poseSens.sense();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		stop();
+
+
+	}
+	
 	public void goStraight() {
 		try {
 			movement.selectMovementType(Movements.STRAIGHT_MOVEMENT);

@@ -22,6 +22,12 @@ public class Position {
 		return radiants;
 	}
 
+	public void setPosition(Position otherPosition) {
+		this.x = otherPosition.getX();
+		this.y = otherPosition.getY();
+		this.radiants = otherPosition.getRadiants();
+	}
+	
 	public void setPosition(double[] position) {
 		this.x = position[1];
 		this.y = position[2];
