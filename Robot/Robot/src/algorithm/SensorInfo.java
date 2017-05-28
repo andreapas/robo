@@ -19,4 +19,14 @@ public class SensorInfo {
 		return min;
 	}
 	
+	public double getLeftValue() {
+		
+		return streamSensed[20];
+	}
+	
+	public double getRightValue() {
+		
+		return streamSensed[0];
+	}
+	
 }
