@@ -53,41 +53,65 @@ public class Mediator {
 
 	}
 
-	public void goStraight() throws Exception {
-		movement.selectMovementType(Movements.STRAIGHT_MOVEMENT);
-		speedAct.act(movement.move());
+	public void goStraight() {
+		try {
+			movement.selectMovementType(Movements.STRAIGHT_MOVEMENT);
+			speedAct.act(movement.move());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 	}
 
-	public void goBack() throws Exception {
-		movement.selectMovementType(Movements.BACK);
-		speedAct.act(movement.move());
+	public void goBack() {
+		try {
+			movement.selectMovementType(Movements.BACK);
+			speedAct.act(movement.move());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 	}
 
-	public void rotateOf(double relative, String direction) throws Exception {
-		poseSens.sense();
-		double actualAngle = actualPosition.getRadiants();
-		movement.selectMovementType(direction);
-		speedAct.act(movement.move());
-		poseSens.sense();
-		while (actualPosition.getRadiants() != (actualAngle + relative)) {
+	public void rotateOf(double relative, String direction) {
+		try {
 			poseSens.sense();
+			double actualAngle = actualPosition.getRadiants();
+			movement.selectMovementType(direction);
+			speedAct.act(movement.move());
+			poseSens.sense();
+			while (actualPosition.getRadiants() != (actualAngle + relative)) {
+				poseSens.sense();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 		stop();
 	}
 
-	public void rotateTo(double absoluteAngle, String direction) throws Exception {
-		movement.selectMovementType(direction);
-		speedAct.act(movement.move());
-		poseSens.sense();
-		while (actualPosition.getRadiants() != absoluteAngle) {
+	public void rotateTo(double absoluteAngle, String direction) {
+		try {
+			movement.selectMovementType(direction);
+			speedAct.act(movement.move());
 			poseSens.sense();
+			while (actualPosition.getRadiants() != absoluteAngle) {
+				poseSens.sense();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
+
 		stop();
 	}
 
-	public void stop() throws Exception {
-		movement.selectMovementType(Movements.STOP);
-		speedAct.act(movement.move());
+	public void stop() {
+		try {
+			movement.selectMovementType(Movements.STOP);
+			speedAct.act(movement.move());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 	}
 
 	public Position getActualPosition() {

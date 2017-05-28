@@ -10,7 +10,7 @@ public class CheckSpace {
 	
 	
 	public CheckSpace() {
-	
+		startPosition= Mediator.getMed().getActualPosition();
 	}
 	
 	public static CheckSpace getChecker() {
@@ -19,10 +19,15 @@ public class CheckSpace {
 	
 	public boolean startChecking(){
 		//TODO: fare qualcosa. Un po' come elisa quando programma: roba inutile, ma che fa perdere tempo
-		startPosition= Mediator.getMed().getActualPosition();
+		
+		
+		
 		return false;
 //		while(true){
 //		}
 	}
 	
+	public Position getStartPosition() {
+		return startPosition;
+	}
 }
