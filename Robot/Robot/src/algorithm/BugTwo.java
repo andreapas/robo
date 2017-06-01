@@ -11,6 +11,7 @@ public class BugTwo {
 	private SensorInfo boundarySensorInfo;
 	private String boundaryRotationDirection;
 	private boolean goalReached = false;
+	private boolean failure = false;
 	
 	public BugTwo() {
 		
@@ -19,14 +20,20 @@ public class BugTwo {
 	
 	public void run() {
 
-		while(!goalReached) {
+		while(!goalReached && !failure) {
 			
 			motionToGoal();
 			if(goalReached) break;
 			boundaryFollowing();
 		}
 		
-		System.out.println("Finito!");
+		if (goalReached) {
+			System.out.println("Goal!\n");
+		} else if (failure) {
+			System.out.println("Fallito\n");
+		} else {
+			System.out.println("Boh\n");
+		}
 	}
 	
 	private void motionToGoal() {
@@ -76,15 +83,15 @@ public class BugTwo {
 			}
 			
 			if(justHit == false && hitPosition.equals(mediator.getActualPosition())) {
-				System.out.println("Fallimento");
+				failure = true;
 				break;
 			}
 			
-			if(/*condizione di uscita*/true) {
+			if(!justHit && mediator.isOnTheRect()) {
 				break;
 			}
 			
-			if(justHit) {
+			if (justHit) {
 				if (!mediator.getActualPosition().equals(hitPosition)) {
 					justHit = false;
 				}
