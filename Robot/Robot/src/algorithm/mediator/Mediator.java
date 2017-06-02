@@ -3,9 +3,7 @@ package algorithm.mediator;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 
-import algorithm.Coordinates;
 import algorithm.GoalCoordinatesCalculator;
 import algorithm.Position;
 import algorithm.SensorInfo;
@@ -38,7 +36,7 @@ public class Mediator {
 	private SensorInfo rightInfo = new SensorInfo();
 	private SensorInfo backInfo = new SensorInfo();
 
-	private Coordinates goalCoordinates = new Coordinates(0.0, 0.0, 0.0, 0.0);
+	private Position goalCoordinates = new Position(0.0, 0.0, 0.0, 0.0);
 	
 	private static BiFunction<Double,Double, Double> pitagora = (a,b) -> Math.sqrt(Math.pow(a, 2)+Math.pow(b, 2));
 	
@@ -89,7 +87,24 @@ public class Mediator {
 
 	}
 
-	public void goBack() {
+	public void goBack(double distance) {
+		try {
+			poseSens.sense();
+			double actualX=actualPosition.getX();
+			double actualY=actualPosition.getY();
+			
+			movement.selectMovementType(Movements.STRAIGHT_MOVEMENT);
+			speedAct.act(movement.move());
+			poseSens.sense();
+			while (pitagora.apply(actualX-actualPosition.getX(),actualY-actualPosition.getY())<distance) {
+				poseSens.sense();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		stop();
+	}
+	public void goBack(){
 		try {
 			movement.selectMovementType(Movements.BACK);
 			speedAct.act(movement.move());
@@ -197,19 +212,19 @@ public class Mediator {
 	private void initializeGoalCoordinates() throws Exception {
 		poseSens.sense();
 		distSens.sense();
-		Coordinates a = new Coordinates(actualPosition.getX(), actualPosition.getY(), actualPosition.getRadiants(),
+		Position a = new Position(actualPosition.getX(), actualPosition.getY(), actualPosition.getRadiants(),
 				distanceFromGoal);
 		movement.selectMovementType(Movements.STRAIGHT_MOVEMENT);
 		speedAct.act(movement.move());
-		Coordinates tmp = new Coordinates(actualPosition.getX(), actualPosition.getY(), actualPosition.getRadiants(),
+		Position tmp = new Position(actualPosition.getX(), actualPosition.getY(), actualPosition.getRadiants(),
 				distanceFromGoal);
-		Coordinates b = new Coordinates(0.0, 0.0, 0.0, 0.0);
-		Coordinates c = new Coordinates(0.0, 0.0, 0.0, 0.0);
+		Position b = new Position(0.0, 0.0, 0.0, 0.0);
+		Position c = new Position(0.0, 0.0, 0.0, 0.0);
 		while (true) {
 			if (checkCoordsOnSameAxis(tmp, 0.5)) {
-				b = new Coordinates(actualPosition.getX(), actualPosition.getY(), actualPosition.getRadiants(),
+				b = new Position(actualPosition.getX(), actualPosition.getY(), actualPosition.getRadiants(),
 						distanceFromGoal);
-				tmp = new Coordinates(actualPosition.getX(), actualPosition.getY(), actualPosition.getRadiants(),
+				tmp = new Position(actualPosition.getX(), actualPosition.getY(), actualPosition.getRadiants(),
 						distanceFromGoal);
 				movement.selectMovementType(Movements.ROTATE_RIGHT);
 				speedAct.act(movement.move());
@@ -225,29 +240,29 @@ public class Mediator {
 			poseSens.sense();
 			distSens.sense();
 			if (checkCoordsOnSameAxis(tmp, 0.5)) {
-				c = new Coordinates(actualPosition.getX(), actualPosition.getY(), actualPosition.getRadiants(),
+				c = new Position(actualPosition.getX(), actualPosition.getY(), actualPosition.getRadiants(),
 						distanceFromGoal);
 				break;
 			}
 
 		}
 		System.out.println(a + "\n" + b + "\n" + c);
-		Coordinates goal;
-		goal = GoalCoordinatesCalculator.lastTry(a, b, c);
+		Position goal;
+		goal = GoalCoordinatesCalculator.findGoal(a, b, c);
 		System.out.println(goal);
 	}
 
-	private boolean rotationCompleted(Coordinates refer, double degrees) throws Exception {
+	private boolean rotationCompleted(Position refer, double degrees) throws Exception {
 		poseSens.sense();
 		distSens.sense();
-		double m = refer.getM();
+		double m = refer.getRadiants();
 		if (Math.abs(Math.abs(actualPosition.getRadiants()) - Math.abs(m)) >= (degrees * Math.PI / 180.0))
 			return true;
 		return false;
 
 	}
 
-	private boolean checkCoordsOnSameAxis(Coordinates last, double soglia) throws IOException {
+	private boolean checkCoordsOnSameAxis(Position last, double soglia) throws IOException {
 		poseSens.sense();
 		distSens.sense();
 		if (Math.abs(last.getX() - actualPosition.getX()) > soglia

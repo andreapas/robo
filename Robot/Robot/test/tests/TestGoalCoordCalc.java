@@ -33,7 +33,7 @@ public class TestGoalCoordCalc {
 		Coordinates b = new Coordinates(1, 1, 0, 2);
 		Coordinates c = new Coordinates(-1, -1, 0, 2);
 
-		Coordinates goal1 = GoalCoordinatesCalculator.lastTry(a, b, c);
+		Coordinates goal1 = GoalCoordinatesCalculator.findGoal(a, b, c);
 		System.out.println(goal1);
 		assertEquals(0, goal1.getX(), 0.1);
 		assertEquals(0, goal1.getY(), 0.1);
@@ -49,7 +49,7 @@ public class TestGoalCoordCalc {
 		Coordinates b = new Coordinates(5, 2, Math.asin(8 / bg), bg);
 		Coordinates c = new Coordinates(5, 5, Math.asin(5 / cg), cg);
 
-		Coordinates goal = GoalCoordinatesCalculator.lastTry(a, b, c);
+		Coordinates goal = GoalCoordinatesCalculator.findGoal(a, b, c);
 		System.out.println(goal.toString());
 		assertEquals(10, goal.getY(), 0.1);
 		assertEquals(12, goal.getX(), 0.1);
@@ -62,7 +62,7 @@ public class TestGoalCoordCalc {
 		Coordinates b = new Coordinates(4.699386119842529, 7.002416610717773, 0.0, 17.798505783081055);
 		Coordinates c = new Coordinates(3.8454885482788086, 6.7290472984313965, 0.0, 17.825885772705078);
 
-		Coordinates goal = GoalCoordinatesCalculator.lastTry(a, b, c);
+		Coordinates goal = GoalCoordinatesCalculator.findGoal(a, b, c);
 		System.out.println("real one= " + goal.toString());
 		then(goal.getX()).isBetween(9.0, 11.0);
 		then(goal.getY()).isBetween(-11.0, -9.0);
@@ -76,7 +76,7 @@ public class TestGoalCoordCalc {
 		Coordinates b = new Coordinates(-13.464030265808105, -7.984826564788818, 0.0, 23.555505752563477);
 		Coordinates c = new Coordinates(14.387412071228027, -17.90849449340, 0.0, 9.0462276092529297);
 
-		Coordinates goal = GoalCoordinatesCalculator.lastTry(a, b, c);
+		Coordinates goal = GoalCoordinatesCalculator.findGoal(a, b, c);
 		System.out.println("real one2= " + goal.toString());
 		then(goal.getX()).isBetween(9.0, 11.0);
 		then(goal.getY()).isBetween(-11.0, -9.0);
@@ -89,7 +89,7 @@ public class TestGoalCoordCalc {
 		Coordinates b = new Coordinates(-11.622086524963379, 10.126947402954102, 0.0, 29.540651321411133);
 		Coordinates c = new Coordinates(-11.055853843688965, -14.029830932617188, 0.0, 21.438983917236328);
 
-		Coordinates goal = GoalCoordinatesCalculator.lastTry(a, b, c);
+		Coordinates goal = GoalCoordinatesCalculator.findGoal(a, b, c);
 		System.out.println("real one3= " + goal.toString());
 		then(goal.getX()).isBetween(9.0, 11.0);
 		then(goal.getY()).isBetween(-11.0, -9.0);
