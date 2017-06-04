@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.function.BiFunction;
 
+import algorithm.BugTwo;
 import algorithm.GoalCoordinatesCalculator;
 import algorithm.Position;
 import algorithm.SensorInfo;
@@ -39,7 +40,7 @@ public class Mediator {
 	private Position goalCoordinates = new Position(0.0, 0.0, 0.0, 0.0);
 	
 	private static BiFunction<Double,Double, Double> pitagora = (a,b) -> Math.sqrt(Math.pow(a, 2)+Math.pow(b, 2));
-	
+	private BugTwo algorithm= new BugTwo();
 
 
 	public static Mediator getMed() {
@@ -48,12 +49,8 @@ public class Mediator {
 
 	public void runRobot(String name) throws Exception {
 		initializePhase(name);
-		if (CheckSpace.getChecker().startChecking())
-			initializeGoalCoordinates();
-		else
-			// TODO: do something else;
-			movement.selectMovementType(Movements.STOP);
-		speedAct.act(movement.move());
+		goalCoordinates=CheckSpace.getChecker().findGoal();
+		algorithm.run();
 
 	}
 
@@ -209,67 +206,7 @@ public class Mediator {
 		return rightInfo;
 	}
 
-	private void initializeGoalCoordinates() throws Exception {
-		poseSens.sense();
-		distSens.sense();
-		Position a = new Position(actualPosition.getX(), actualPosition.getY(), actualPosition.getRadiants(),
-				distanceFromGoal);
-		movement.selectMovementType(Movements.STRAIGHT_MOVEMENT);
-		speedAct.act(movement.move());
-		Position tmp = new Position(actualPosition.getX(), actualPosition.getY(), actualPosition.getRadiants(),
-				distanceFromGoal);
-		Position b = new Position(0.0, 0.0, 0.0, 0.0);
-		Position c = new Position(0.0, 0.0, 0.0, 0.0);
-		while (true) {
-			if (checkCoordsOnSameAxis(tmp, 0.5)) {
-				b = new Position(actualPosition.getX(), actualPosition.getY(), actualPosition.getRadiants(),
-						distanceFromGoal);
-				tmp = new Position(actualPosition.getX(), actualPosition.getY(), actualPosition.getRadiants(),
-						distanceFromGoal);
-				movement.selectMovementType(Movements.ROTATE_RIGHT);
-				speedAct.act(movement.move());
-				break;
-			}
-
-		}
-		while (!rotationCompleted(tmp, 90)) {
-		}
-		movement.selectMovementType(Movements.STRAIGHT_MOVEMENT);
-		speedAct.act(movement.move());
-		while (true) {
-			poseSens.sense();
-			distSens.sense();
-			if (checkCoordsOnSameAxis(tmp, 0.5)) {
-				c = new Position(actualPosition.getX(), actualPosition.getY(), actualPosition.getRadiants(),
-						distanceFromGoal);
-				break;
-			}
-
-		}
-		System.out.println(a + "\n" + b + "\n" + c);
-		Position goal;
-		goal = GoalCoordinatesCalculator.findGoal(a, b, c);
-		System.out.println(goal);
-	}
-
-	private boolean rotationCompleted(Position refer, double degrees) throws Exception {
-		poseSens.sense();
-		distSens.sense();
-		double m = refer.getRadiants();
-		if (Math.abs(Math.abs(actualPosition.getRadiants()) - Math.abs(m)) >= (degrees * Math.PI / 180.0))
-			return true;
-		return false;
-
-	}
-
-	private boolean checkCoordsOnSameAxis(Position last, double soglia) throws IOException {
-		poseSens.sense();
-		distSens.sense();
-		if (Math.abs(last.getX() - actualPosition.getX()) > soglia
-				|| Math.abs(last.getY() - actualPosition.getY()) > soglia)
-			return true;
-		return false;
-	}
+	
 
 	private void initializePhase(String name) throws IOException {
 
