@@ -9,6 +9,7 @@ public class BugTwo {
 	private boolean justHit;
 	private SensorInfo boundarySensorInfo;
 	private String boundaryRotationDirection;
+	private String antiBoundaryRotationDirection;
 	private boolean goalReached = false;
 	private boolean failure = false;
 	private double rect_m;
@@ -59,19 +60,23 @@ public class BugTwo {
 				if(Mediator.getMed().getCentralInfo().getRightValue() > Mediator.getMed().getCentralInfo().getRightValue()) {
 					boundarySensorInfo = Mediator.getMed().getLeftInfo();
 					boundaryRotationDirection = Movements.ROTATE_RIGHT;
+					antiBoundaryRotationDirection = Movements.ROTATE_LEFT;
 					break;
 				} else {
 					boundarySensorInfo = Mediator.getMed().getRightInfo();
 					boundaryRotationDirection = Movements.ROTATE_LEFT;
+					antiBoundaryRotationDirection = Movements.ROTATE_RIGHT;
 					break;
 				}
 			} else if(Mediator.getMed().getLeftInfo().getMinDistance()<1.8 || Mediator.getMed().getCentralInfo().getLeftValue()<1.8) {
 				boundarySensorInfo = Mediator.getMed().getLeftInfo();
 				boundaryRotationDirection = Movements.ROTATE_RIGHT;
+				antiBoundaryRotationDirection = Movements.ROTATE_LEFT;
 				break;
 			} else if(Mediator.getMed().getLeftInfo().getMinDistance()<1.8 || Mediator.getMed().getCentralInfo().getRightValue()<1.8) {
 				boundarySensorInfo = Mediator.getMed().getRightInfo();
 				boundaryRotationDirection = Movements.ROTATE_LEFT;
+				antiBoundaryRotationDirection = Movements.ROTATE_RIGHT;
 				break;
 			} else {
 				rotateToGoal();
@@ -130,7 +135,7 @@ public class BugTwo {
 				System.out.println("\tSono il codice di DAVIDE-- quinto if");
 
 				Mediator.getMed().rotateOf(0.3, boundaryRotationDirection);
-			} else if (boundarySensorInfo.getMinDistance()<1.5) {
+			} else if (boundarySensorInfo.getMinDistance()<1.3) {
 				System.out.println("\tSono il codice di DAVIDE-- sesto if");
 
 				Mediator.getMed().rotateOf(0.3, boundaryRotationDirection);
@@ -138,7 +143,7 @@ public class BugTwo {
 			} else if (boundarySensorInfo.getMinDistance()>1.8) {
 				System.out.println("\tSono il codice di DAVIDE-- settimo if");
 
-				Mediator.getMed().rotateOf(0.3, boundaryRotationDirection);
+				Mediator.getMed().rotateOf(0.3, antiBoundaryRotationDirection);
 			} else {
 				System.out.println("\tSono il codice di DAVIDE-- ottavo if");
 
