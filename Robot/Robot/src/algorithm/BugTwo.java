@@ -4,7 +4,7 @@ import algorithm.mediator.Mediator;
 import algorithm.proxyMovements.Movements;
 
 public class BugTwo {
-	
+	//TODO: errore nel rotateOf if quinto, problema nella svolta angolare.
 	private Position hitPosition;
 	private boolean justHit;
 	private String boundaryDirection;
@@ -65,10 +65,10 @@ public class BugTwo {
 					boundaryDirection = "r";
 					break;
 				}
-			} else if(Mediator.getMed().getLeftInfo().getMinDistance()<1.5 || Mediator.getMed().getCentralInfo().getLeftValue()<1.5) {
+			} else if(Mediator.getMed().getLeftInfo().getMinDistance()<1.8 || Mediator.getMed().getCentralInfo().getLeftValue()<1.8) {
 				boundaryDirection = "l";
 				break;
-			} else if(Mediator.getMed().getRightInfo().getMinDistance()<1.5 || Mediator.getMed().getCentralInfo().getRightValue()<1.5) {
+			} else if(Mediator.getMed().getRightInfo().getMinDistance()<1.8 || Mediator.getMed().getCentralInfo().getRightValue()<1.8) {
 				boundaryDirection = "r";
 				break;
 			} else {
@@ -129,16 +129,16 @@ public class BugTwo {
 				if (Mediator.getMed().getCentralInfo().getMinDistance()<2.0) {
 					System.out.println("\tSono il codice di DAVIDE-- L quinto if  "+Mediator.getMed().getCentralInfo().getMinDistance());
 
-					Mediator.getMed().rotateOf(0.1, Movements.ROTATE_RIGHT);
+					Mediator.getMed().rotateOf(0.3, Movements.ROTATE_RIGHT);
 				} else if (Mediator.getMed().getLeftInfo().getMinDistance()<1.3) {
 					System.out.println("\tSono il codice di DAVIDE-- sesto if");
 
-					Mediator.getMed().rotateOf(0.1, Movements.ROTATE_RIGHT);
+					Mediator.getMed().rotateOf(0.3, Movements.ROTATE_RIGHT);
 
-				} else if (Mediator.getMed().getLeftInfo().getMinDistance()>1.5) {
+				} else if (Mediator.getMed().getLeftInfo().getMinDistance()>1.8) {
 					System.out.println("\tSono il codice di DAVIDE-- L settimo if  "+Mediator.getMed().getLeftInfo().getMinDistance());
 
-					Mediator.getMed().rotateOf(0.1, Movements.ROTATE_LEFT);
+					Mediator.getMed().rotateOf(0.3, Movements.ROTATE_LEFT);
 				} else {
 					System.out.println("\tSono il codice di DAVIDE-- ottavo if");
 
@@ -148,16 +148,16 @@ public class BugTwo {
 				if (Mediator.getMed().getCentralInfo().getMinDistance()<2.0) {
 					System.out.println("\tSono il codice di DAVIDE-- R quinto if  "+Mediator.getMed().getCentralInfo().getMinDistance());
 
-					Mediator.getMed().rotateOf(0.1, Movements.ROTATE_LEFT);
+					Mediator.getMed().rotateOf(0.3, Movements.ROTATE_LEFT);
 				} else if (Mediator.getMed().getRightInfo().getMinDistance()<1.3) {
 					System.out.println("\tSono il codice di DAVIDE-- sesto if");
 
-					Mediator.getMed().rotateOf(0.1, Movements.ROTATE_LEFT);
+					Mediator.getMed().rotateOf(0.3, Movements.ROTATE_LEFT);
 
-				} else if (Mediator.getMed().getRightInfo().getMinDistance()>1.5) {
+				} else if (Mediator.getMed().getRightInfo().getMinDistance()>1.8) {
 					System.out.println("\tSono il codice di DAVIDE-- R settimo if  "+Mediator.getMed().getRightInfo().getMinDistance());
 
-					Mediator.getMed().rotateOf(0.1, Movements.ROTATE_RIGHT);
+					Mediator.getMed().rotateOf(0.3, Movements.ROTATE_RIGHT);
 				} else {
 					System.out.println("\tSono il codice di DAVIDE-- ottavo if");
 
