@@ -7,6 +7,7 @@ public class BugTwo {
 	
 	private Position hitPosition;
 	private boolean justHit;
+	private String boundaryDirection;
 	private SensorInfo boundarySensorInfo;
 	private String boundaryRotationDirection;
 	private String antiBoundaryRotationDirection;
@@ -58,32 +59,17 @@ public class BugTwo {
 			
 			if(Mediator.getMed().getCentralInfo().getMinDistance()<1.8) {
 				if(Mediator.getMed().getCentralInfo().getRightValue() > Mediator.getMed().getCentralInfo().getLeftValue()) {
-					System.out.println("BDSINFO è LEFT");
-					boundarySensorInfo = Mediator.getMed().getLeftInfo();
-					boundaryRotationDirection = Movements.ROTATE_RIGHT;
-					antiBoundaryRotationDirection = Movements.ROTATE_LEFT;
+					boundaryDirection = "l";
 					break;
 				} else {
-					System.out.println("BDSINFO è RIGHT");
-
-					boundarySensorInfo = Mediator.getMed().getRightInfo();
-					boundaryRotationDirection = Movements.ROTATE_LEFT;
-					antiBoundaryRotationDirection = Movements.ROTATE_RIGHT;
+					boundaryDirection = "r";
 					break;
 				}
 			} else if(Mediator.getMed().getLeftInfo().getMinDistance()<1.8 || Mediator.getMed().getCentralInfo().getLeftValue()<1.8) {
-				System.out.println("BDSINFO è LEFT");
-
-				boundarySensorInfo = Mediator.getMed().getLeftInfo();
-				boundaryRotationDirection = Movements.ROTATE_RIGHT;
-				antiBoundaryRotationDirection = Movements.ROTATE_LEFT;
+				boundaryDirection = "l";
 				break;
 			} else if(Mediator.getMed().getRightInfo().getMinDistance()<1.8 || Mediator.getMed().getCentralInfo().getRightValue()<1.8) {
-				System.out.println("BDSINFO è RIGHT");
-
-				boundarySensorInfo = Mediator.getMed().getRightInfo();
-				boundaryRotationDirection = Movements.ROTATE_LEFT;
-				antiBoundaryRotationDirection = Movements.ROTATE_RIGHT;
+				boundaryDirection = "r";
 				break;
 			} else {
 				rotateToGoal();
@@ -139,24 +125,47 @@ public class BugTwo {
 				}
 			}
 			System.out.println("STO PER FARE IL MIN DIST");
-			if (Mediator.getMed().getCentralInfo().getMinDistance()<2.0) {
-				System.out.println("\tSono il codice di DAVIDE-- quinto if  "+Mediator.getMed().getCentralInfo().getMinDistance());
+			if (boundaryDirection.equals("l")) {
+				if (Mediator.getMed().getCentralInfo().getMinDistance()<2.0) {
+					System.out.println("\tSono il codice di DAVIDE-- quinto if  "+Mediator.getMed().getCentralInfo().getMinDistance());
 
-				Mediator.getMed().rotateOf(0.1, boundaryRotationDirection);
-			} else if (boundarySensorInfo.getMinDistance()<1.3) {
-				System.out.println("\tSono il codice di DAVIDE-- sesto if");
+					Mediator.getMed().rotateOf(0.1, Movements.ROTATE_RIGHT);
+				} else if (Mediator.getMed().getLeftInfo().getMinDistance()<1.3) {
+					System.out.println("\tSono il codice di DAVIDE-- sesto if");
 
-				Mediator.getMed().rotateOf(0.1, boundaryRotationDirection);
+					Mediator.getMed().rotateOf(0.1, Movements.ROTATE_RIGHT);
 
-			} else if (boundarySensorInfo.getMinDistance()>1.8) {
-				System.out.println("\tSono il codice di DAVIDE-- settimo if  "+Mediator.getMed().getCentralInfo().getMinDistance());
+				} else if (Mediator.getMed().getLeftInfo().getMinDistance()>1.8) {
+					System.out.println("\tSono il codice di DAVIDE-- settimo if  "+Mediator.getMed().getCentralInfo().getMinDistance());
 
-				Mediator.getMed().rotateOf(0.1, antiBoundaryRotationDirection);
+					Mediator.getMed().rotateOf(0.1, Movements.ROTATE_LEFT);
+				} else {
+					System.out.println("\tSono il codice di DAVIDE-- ottavo if");
+
+					Mediator.getMed().goStraight();
+				}	
+			} else if (boundaryDirection.equals("r")) {
+				if (Mediator.getMed().getCentralInfo().getMinDistance()<2.0) {
+					System.out.println("\tSono il codice di DAVIDE-- quinto if  "+Mediator.getMed().getCentralInfo().getMinDistance());
+
+					Mediator.getMed().rotateOf(0.1, Movements.ROTATE_LEFT);
+				} else if (Mediator.getMed().getRightInfo().getMinDistance()<1.3) {
+					System.out.println("\tSono il codice di DAVIDE-- sesto if");
+
+					Mediator.getMed().rotateOf(0.1, Movements.ROTATE_LEFT);
+
+				} else if (Mediator.getMed().getRightInfo().getMinDistance()>1.8) {
+					System.out.println("\tSono il codice di DAVIDE-- settimo if  "+Mediator.getMed().getCentralInfo().getMinDistance());
+
+					Mediator.getMed().rotateOf(0.1, Movements.ROTATE_RIGHT);
+				} else {
+					System.out.println("\tSono il codice di DAVIDE-- ottavo if");
+
+					Mediator.getMed().goStraight();
+				}
 			} else {
-				System.out.println("\tSono il codice di DAVIDE-- ottavo if");
-
-				Mediator.getMed().goStraight();
-			}		
+				System.out.println("Errore");
+			}	
 		}
 	}
 	
