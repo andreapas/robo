@@ -130,20 +130,20 @@ public class BugTwo {
 					justHit = false;
 				}
 			}
-			
+			System.out.println("STO PER FARE IL MIN DIST");
 			if (Mediator.getMed().getCentralInfo().getMinDistance()<2.0) {
-				System.out.println("\tSono il codice di DAVIDE-- quinto if");
+				System.out.println("\tSono il codice di DAVIDE-- quinto if  "+Mediator.getMed().getCentralInfo().getMinDistance());
 
-				Mediator.getMed().rotateOf(0.3, boundaryRotationDirection);
+				Mediator.getMed().rotateOf(0.1, boundaryRotationDirection);
 			} else if (boundarySensorInfo.getMinDistance()<1.3) {
 				System.out.println("\tSono il codice di DAVIDE-- sesto if");
 
-				Mediator.getMed().rotateOf(0.3, boundaryRotationDirection);
+				Mediator.getMed().rotateOf(0.1, boundaryRotationDirection);
 
 			} else if (boundarySensorInfo.getMinDistance()>1.8) {
-				System.out.println("\tSono il codice di DAVIDE-- settimo if");
+				System.out.println("\tSono il codice di DAVIDE-- settimo if  "+Mediator.getMed().getCentralInfo().getMinDistance());
 
-				Mediator.getMed().rotateOf(0.3, antiBoundaryRotationDirection);
+				Mediator.getMed().rotateOf(0.1, antiBoundaryRotationDirection);
 			} else {
 				System.out.println("\tSono il codice di DAVIDE-- ottavo if");
 
