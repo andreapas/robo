@@ -65,10 +65,10 @@ public class BugTwo {
 					boundaryDirection = "r";
 					break;
 				}
-			} else if(Mediator.getMed().getLeftInfo().getMinDistance()<1.8 || Mediator.getMed().getCentralInfo().getLeftValue()<1.8) {
+			} else if(Mediator.getMed().getLeftInfo().getMinDistance()<1.5 || Mediator.getMed().getCentralInfo().getLeftValue()<1.5) {
 				boundaryDirection = "l";
 				break;
-			} else if(Mediator.getMed().getRightInfo().getMinDistance()<1.8 || Mediator.getMed().getCentralInfo().getRightValue()<1.8) {
+			} else if(Mediator.getMed().getRightInfo().getMinDistance()<1.5 || Mediator.getMed().getCentralInfo().getRightValue()<1.5) {
 				boundaryDirection = "r";
 				break;
 			} else {
@@ -127,7 +127,7 @@ public class BugTwo {
 			System.out.println("STO PER FARE IL MIN DIST");
 			if (boundaryDirection.equals("l")) {
 				if (Mediator.getMed().getCentralInfo().getMinDistance()<2.0) {
-					System.out.println("\tSono il codice di DAVIDE-- quinto if  "+Mediator.getMed().getCentralInfo().getMinDistance());
+					System.out.println("\tSono il codice di DAVIDE-- L quinto if  "+Mediator.getMed().getCentralInfo().getMinDistance());
 
 					Mediator.getMed().rotateOf(0.1, Movements.ROTATE_RIGHT);
 				} else if (Mediator.getMed().getLeftInfo().getMinDistance()<1.3) {
@@ -135,8 +135,8 @@ public class BugTwo {
 
 					Mediator.getMed().rotateOf(0.1, Movements.ROTATE_RIGHT);
 
-				} else if (Mediator.getMed().getLeftInfo().getMinDistance()>1.8) {
-					System.out.println("\tSono il codice di DAVIDE-- settimo if  "+Mediator.getMed().getCentralInfo().getMinDistance());
+				} else if (Mediator.getMed().getLeftInfo().getMinDistance()>1.5) {
+					System.out.println("\tSono il codice di DAVIDE-- L settimo if  "+Mediator.getMed().getLeftInfo().getMinDistance());
 
 					Mediator.getMed().rotateOf(0.1, Movements.ROTATE_LEFT);
 				} else {
@@ -146,7 +146,7 @@ public class BugTwo {
 				}	
 			} else if (boundaryDirection.equals("r")) {
 				if (Mediator.getMed().getCentralInfo().getMinDistance()<2.0) {
-					System.out.println("\tSono il codice di DAVIDE-- quinto if  "+Mediator.getMed().getCentralInfo().getMinDistance());
+					System.out.println("\tSono il codice di DAVIDE-- R quinto if  "+Mediator.getMed().getCentralInfo().getMinDistance());
 
 					Mediator.getMed().rotateOf(0.1, Movements.ROTATE_LEFT);
 				} else if (Mediator.getMed().getRightInfo().getMinDistance()<1.3) {
@@ -154,8 +154,8 @@ public class BugTwo {
 
 					Mediator.getMed().rotateOf(0.1, Movements.ROTATE_LEFT);
 
-				} else if (Mediator.getMed().getRightInfo().getMinDistance()>1.8) {
-					System.out.println("\tSono il codice di DAVIDE-- settimo if  "+Mediator.getMed().getCentralInfo().getMinDistance());
+				} else if (Mediator.getMed().getRightInfo().getMinDistance()>1.5) {
+					System.out.println("\tSono il codice di DAVIDE-- R settimo if  "+Mediator.getMed().getRightInfo().getMinDistance());
 
 					Mediator.getMed().rotateOf(0.1, Movements.ROTATE_RIGHT);
 				} else {

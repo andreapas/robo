@@ -128,7 +128,13 @@ public class Mediator {
 			speedAct.act(movement.move());
 			poseSens.sense();
 			//System.out.println("actual= "+ actualAngle+ " relative= "+relative);
-			while (!isInRange(actualPosition.getRadiants(), correctSum(actualAngle, relative))) {
+			double sum;
+			if(direction.equals(Movements.ROTATE_LEFT)){
+				sum=actualAngle+relative;
+			}else{
+				sum=actualAngle-relative;
+			}
+			while (!isInRange(actualPosition.getRadiants(), correctSum(sum))) {
 				//System.out.println("--- "+actualPosition.getRadiants()+" act+ rel= "+correctSum(actualAngle, relative)+ " is in range? "+isInRange(actualPosition.getRadiants(), correctSum(actualAngle, relative)));
 				poseSens.sense();
 			}
@@ -138,8 +144,9 @@ public class Mediator {
 		stop();
 	}
 
-	private double correctSum(double actualAngle, double relativeAngle){
-		double sum=actualAngle+relativeAngle;
+	
+	
+	private double correctSum(double sum){
 		double diff;
 		if(sum>Math.PI){
 			diff=sum-Math.PI;
