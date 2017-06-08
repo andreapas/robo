@@ -57,7 +57,7 @@ public class BugTwo {
 			}
 			
 			if(Mediator.getMed().getCentralInfo().getMinDistance()<1.8) {
-				if(Mediator.getMed().getCentralInfo().getRightValue() > Mediator.getMed().getCentralInfo().getRightValue()) {
+				if(Mediator.getMed().getCentralInfo().getRightValue() > Mediator.getMed().getCentralInfo().getLeftValue()) {
 					boundarySensorInfo = Mediator.getMed().getLeftInfo();
 					boundaryRotationDirection = Movements.ROTATE_RIGHT;
 					antiBoundaryRotationDirection = Movements.ROTATE_LEFT;
@@ -73,7 +73,7 @@ public class BugTwo {
 				boundaryRotationDirection = Movements.ROTATE_RIGHT;
 				antiBoundaryRotationDirection = Movements.ROTATE_LEFT;
 				break;
-			} else if(Mediator.getMed().getLeftInfo().getMinDistance()<1.8 || Mediator.getMed().getCentralInfo().getRightValue()<1.8) {
+			} else if(Mediator.getMed().getRightInfo().getMinDistance()<1.8 || Mediator.getMed().getCentralInfo().getRightValue()<1.8) {
 				boundarySensorInfo = Mediator.getMed().getRightInfo();
 				boundaryRotationDirection = Movements.ROTATE_LEFT;
 				antiBoundaryRotationDirection = Movements.ROTATE_RIGHT;
