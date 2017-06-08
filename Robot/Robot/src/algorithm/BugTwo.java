@@ -74,6 +74,7 @@ public class BugTwo {
 				boundaryRotationDirection = Movements.ROTATE_LEFT;
 				break;
 			} else {
+				rotateToGoal();
 				Mediator.getMed().goStraight();
 			}
 			
@@ -114,7 +115,6 @@ public class BugTwo {
 			} else if (boundarySensorInfo.getMinDistance()>1.8) {
 				Mediator.getMed().rotateOf(0.3, boundaryRotationDirection);
 			} else {
-				rotateToGoal();
 				Mediator.getMed().goStraight();
 			}		
 		}
