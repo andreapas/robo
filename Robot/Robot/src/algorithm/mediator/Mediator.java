@@ -47,6 +47,10 @@ public class Mediator {
 		return med;
 	}
 
+	public Position getGoal() {
+		return goalCoordinates;
+	}
+	
 	public void runRobot(String name) throws Exception {
 		initializePhase(name);
 		goalCoordinates=CheckSpace.getChecker().findGoal();
