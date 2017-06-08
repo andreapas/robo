@@ -15,6 +15,7 @@ public class BugTwo {
 	private double rect_q;
 	private double y;
 	private double x;
+	private double mToGoal;
 	
 	
 	public void run() {
@@ -113,11 +114,18 @@ public class BugTwo {
 			} else if (boundarySensorInfo.getMinDistance()>1.8) {
 				Mediator.getMed().rotateOf(0.3, boundaryRotationDirection);
 			} else {
+				rotateToGoal();
 				Mediator.getMed().goStraight();
 			}		
 		}
 	}
 	
+	private void rotateToGoal() {
+		
+		mToGoal = (Mediator.getMed().getGoal().getY() - Mediator.getMed().getActualPosition().getY())/(Mediator.getMed().getGoal().getX() - Mediator.getMed().getActualPosition().getX());
+		Mediator.getMed().rotateTo(Math.atan(mToGoal), Movements.ROTATE_RIGHT);
+	}
+
 	private boolean isOnTheRect() {
 		
 		y = Mediator.getMed().getActualPosition().getY();
