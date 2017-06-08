@@ -5,7 +5,6 @@ import algorithm.proxyMovements.Movements;
 
 public class BugTwo {
 	
-	private Mediator mediator = null;
 	private Position hitPosition;
 	private boolean justHit;
 	private SensorInfo boundarySensorInfo;
@@ -17,19 +16,17 @@ public class BugTwo {
 	private double y;
 	private double x;
 	
-	public BugTwo() {
-		
-		mediator = Mediator.getMed();
-	}
 	
 	public void run() {
 
 		calculateGoalRect();
 		
 		while(!goalReached && !failure) {
-			
+			System.out.println("Sono il codice di DAVIDE-- inizio il motion");
 			motionToGoal();
+			System.out.println("Sono il codice di DAVIDE-- if verificato? "+ goalReached);
 			if(goalReached) break;
+			System.out.println("Sono il codice di DAVIDE-- inizio il boundary");
 			boundaryFollowing();
 		}
 		
@@ -44,8 +41,8 @@ public class BugTwo {
 	
 	private void calculateGoalRect() {
 		
-		rect_m = (mediator.getGoal().getY() - mediator.getActualPosition().getY())/(mediator.getGoal().getX() - mediator.getActualPosition().getX());
-		rect_q = mediator.getActualPosition().getY()-rect_m*mediator.getActualPosition().getX();
+		rect_m = (Mediator.getMed().getGoal().getY() - Mediator.getMed().getActualPosition().getY())/(Mediator.getMed().getGoal().getX() - Mediator.getMed().getActualPosition().getX());
+		rect_q = Mediator.getMed().getActualPosition().getY()-rect_m*Mediator.getMed().getActualPosition().getX();
 	}
 
 	private void motionToGoal() {
@@ -57,26 +54,26 @@ public class BugTwo {
 				break;
 			}
 			
-			if(mediator.getCentralInfo().getMinDistance()<1.8) {
-				if(mediator.getCentralInfo().getRightValue() > mediator.getCentralInfo().getRightValue()) {
-					boundarySensorInfo = mediator.getLeftInfo();
+			if(Mediator.getMed().getCentralInfo().getMinDistance()<1.8) {
+				if(Mediator.getMed().getCentralInfo().getRightValue() > Mediator.getMed().getCentralInfo().getRightValue()) {
+					boundarySensorInfo = Mediator.getMed().getLeftInfo();
 					boundaryRotationDirection = Movements.ROTATE_RIGHT;
 					break;
 				} else {
-					boundarySensorInfo = mediator.getRightInfo();
+					boundarySensorInfo = Mediator.getMed().getRightInfo();
 					boundaryRotationDirection = Movements.ROTATE_LEFT;
 					break;
 				}
-			} else if(mediator.getLeftInfo().getMinDistance()<1.8 || mediator.getCentralInfo().getLeftValue()<1.8) {
-				boundarySensorInfo = mediator.getLeftInfo();
+			} else if(Mediator.getMed().getLeftInfo().getMinDistance()<1.8 || Mediator.getMed().getCentralInfo().getLeftValue()<1.8) {
+				boundarySensorInfo = Mediator.getMed().getLeftInfo();
 				boundaryRotationDirection = Movements.ROTATE_RIGHT;
 				break;
-			} else if(mediator.getLeftInfo().getMinDistance()<1.8 || mediator.getCentralInfo().getRightValue()<1.8) {
-				boundarySensorInfo = mediator.getRightInfo();
+			} else if(Mediator.getMed().getLeftInfo().getMinDistance()<1.8 || Mediator.getMed().getCentralInfo().getRightValue()<1.8) {
+				boundarySensorInfo = Mediator.getMed().getRightInfo();
 				boundaryRotationDirection = Movements.ROTATE_LEFT;
 				break;
 			} else {
-				mediator.goStraight();
+				Mediator.getMed().goStraight();
 			}
 			
 		}
@@ -84,7 +81,7 @@ public class BugTwo {
 	
 	private void boundaryFollowing() {
 		
-		hitPosition = mediator.getActualPosition();
+		hitPosition = Mediator.getMed().getActualPosition();
 	    justHit = true;
 		
 		while(true) {
@@ -94,7 +91,7 @@ public class BugTwo {
 				break;
 			}
 			
-			if(justHit == false && hitPosition.equals(mediator.getActualPosition())) {
+			if(justHit == false && hitPosition.equals(Mediator.getMed().getActualPosition())) {
 				failure = true;
 				break;
 			}
@@ -104,33 +101,33 @@ public class BugTwo {
 			}
 			
 			if (justHit) {
-				if (!mediator.getActualPosition().equals(hitPosition)) {
+				if (!Mediator.getMed().getActualPosition().equals(hitPosition)) {
 					justHit = false;
 				}
 			}
 			
-			if (mediator.getCentralInfo().getMinDistance()<2.0) {
-				mediator.rotateOf(0.3, boundaryRotationDirection);
+			if (Mediator.getMed().getCentralInfo().getMinDistance()<2.0) {
+				Mediator.getMed().rotateOf(0.3, boundaryRotationDirection);
 			} else if (boundarySensorInfo.getMinDistance()<1.5) {
-				mediator.rotateOf(0.3, boundaryRotationDirection);
+				Mediator.getMed().rotateOf(0.3, boundaryRotationDirection);
 			} else if (boundarySensorInfo.getMinDistance()>1.8) {
-				mediator.rotateOf(0.3, boundaryRotationDirection);
+				Mediator.getMed().rotateOf(0.3, boundaryRotationDirection);
 			} else {
-				mediator.goStraight();
+				Mediator.getMed().goStraight();
 			}		
 		}
 	}
 	
 	private boolean isOnTheRect() {
 		
-		y = mediator.getActualPosition().getY();
-		x = mediator.getActualPosition().getX();
+		y = Mediator.getMed().getActualPosition().getY();
+		x = Mediator.getMed().getActualPosition().getX();
 		return (y>(rect_m*x+rect_q)-0.5) && (y<(rect_m*x+rect_q)+0.5);
 	}
 	
 	private boolean isGoalReached() {
 		
-		if (mediator.getDistanceFromGoal()<1) return true;
+		if (Mediator.getMed().getDistanceFromGoal()<1) return true;
 
 		return false;
 	}

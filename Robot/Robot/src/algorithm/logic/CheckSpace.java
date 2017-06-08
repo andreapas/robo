@@ -23,27 +23,48 @@ public class CheckSpace {
 	}
 
 	public Position findGoal() {
+		System.out.println("Find Goal... forse");
 		if (startPosition.getRadiants() > 0.1 || startPosition.getRadiants() < -0.1) {
-			if (startPosition.getRadiants() > 0)
-				Mediator.getMed().rotateTo(0, Movements.ROTATE_RIGHT);
-			else
-				Mediator.getMed().rotateTo(0, Movements.ROTATE_LEFT);
-		}
+			if (startPosition.getRadiants() > 0) {
+				System.out.println("Rotating right... forse");
 
-		if (checkActual(Mediator.getMed().getCentralInfo())) {
-			identifySecondXAndOther("forward");
-		} else if (checkActual(Mediator.getMed().getBackInfo())) {
-			identifySecondXAndOther("backward");
-		} else {
-			otherPosition.setPosition(startPosition);
-			Mediator.getMed().rotateOf(Math.PI / 2, Movements.ROTATE_LEFT);
-			if (checkActual(Mediator.getMed().getCentralInfo())) {
-				identifyXsPoints("forward");
-			} else if (checkActual(Mediator.getMed().getBackInfo())) {
-				identifyXsPoints("backward");
+				Mediator.getMed().rotateTo(0, Movements.ROTATE_RIGHT);
+				System.out.println("Agg fornut... forse");
+
+			} else {
+				System.out.println("Rotating left... forse");
+
+				Mediator.getMed().rotateTo(0, Movements.ROTATE_LEFT);
+				System.out.println("Agg fornut... forse");
+
 			}
 		}
 
+		if (checkActual(Mediator.getMed().getCentralInfo())) {
+			System.out.println("primo if... forse");
+
+			identifySecondXAndOther("forward");
+		} else if (checkActual(Mediator.getMed().getBackInfo())) {
+			System.out.println("secondo if... forse");
+
+			identifySecondXAndOther("backward");
+		} else {
+			System.out.println("terzo if... forse");
+
+			otherPosition.setPosition(startPosition);
+			Mediator.getMed().rotateOf(Math.PI / 2, Movements.ROTATE_LEFT);
+			if (checkActual(Mediator.getMed().getCentralInfo())) {
+				System.out.println("quarto if... forse");
+
+				identifyXsPoints("forward");
+			} else if (checkActual(Mediator.getMed().getBackInfo())) {
+				System.out.println("quinto if... forse");
+
+				identifyXsPoints("backward");
+			}
+		}
+		System.out.println("fanculo ho finito. Se non funziono sono cazzi di Davide!");
+		
 		return GoalCoordinatesCalculator.findGoal(positionX1, positionX2, otherPosition);
 	}
 

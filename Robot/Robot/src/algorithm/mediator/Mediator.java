@@ -49,11 +49,13 @@ public class Mediator {
 
 	public Position getGoal() {
 		return goalCoordinates;
+		
 	}
 	
 	public void runRobot(String name) throws Exception {
 		initializePhase(name);
 		goalCoordinates=CheckSpace.getChecker().findGoal();
+		System.out.println("Se sono io, Davide può picchiare Andrea... "+goalCoordinates);
 		algorithm.run();
 
 	}
@@ -122,7 +124,7 @@ public class Mediator {
 			movement.selectMovementType(direction);
 			speedAct.act(movement.move());
 			poseSens.sense();
-			while (actualPosition.getRadiants() != (actualAngle + relative)) {
+			while (!isInRange(actualPosition.getRadiants(), actualAngle+relative)) {
 				poseSens.sense();
 			}
 		} catch (IOException e) {
@@ -136,7 +138,7 @@ public class Mediator {
 			movement.selectMovementType(direction);
 			speedAct.act(movement.move());
 			poseSens.sense();
-			while (actualPosition.getRadiants() != absoluteAngle) {
+			while (!isInRange(actualPosition.getRadiants(), absoluteAngle)) {
 				poseSens.sense();
 			}
 		} catch (IOException e) {
@@ -146,6 +148,15 @@ public class Mediator {
 		stop();
 	}
 
+	private boolean isInRange(double actual, double expected){
+		boolean evaluateLower=actual>(expected-0.1);
+		boolean evaluateUpper=actual<(expected+0.1);
+		//System.out.println("actual= "+actual+ "is in range of +- 0.2 from "+expected+ "?"+(evaluateLower&&evaluateUpper));
+		return (evaluateLower&&evaluateUpper);
+		
+	}
+	
+	
 	public void stop() {
 		try {
 			movement.selectMovementType(Movements.STOP);
