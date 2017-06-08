@@ -12,6 +12,10 @@ public class BugTwo {
 	private String boundaryRotationDirection;
 	private boolean goalReached = false;
 	private boolean failure = false;
+	private double rect_m;
+	private double rect_q;
+	private double y;
+	private double x;
 	
 	public BugTwo() {
 		
@@ -20,6 +24,8 @@ public class BugTwo {
 	
 	public void run() {
 
+		calculateGoalRect();
+		
 		while(!goalReached && !failure) {
 			
 			motionToGoal();
@@ -36,6 +42,12 @@ public class BugTwo {
 		}
 	}
 	
+	private void calculateGoalRect() {
+		
+		rect_m = (mediator.getGoal().getY() - mediator.getActualPosition().getY())/(mediator.getGoal().getX() - mediator.getActualPosition().getX());
+		rect_q = mediator.getActualPosition().getY()-rect_m*mediator.getActualPosition().getX();
+	}
+
 	private void motionToGoal() {
 		
 		while(true) {
@@ -87,7 +99,7 @@ public class BugTwo {
 				break;
 			}
 			
-			if(!justHit && mediator.isOnTheRect()) {
+			if(!justHit && isOnTheRect()) {
 				break;
 			}
 			
@@ -107,6 +119,13 @@ public class BugTwo {
 				mediator.goStraight();
 			}		
 		}
+	}
+	
+	private boolean isOnTheRect() {
+		
+		y = mediator.getActualPosition().getY();
+		x = mediator.getActualPosition().getX();
+		return (y>(rect_m*x+rect_q)-0.5) && (y<(rect_m*x+rect_q)+0.5);
 	}
 	
 	private boolean isGoalReached() {
