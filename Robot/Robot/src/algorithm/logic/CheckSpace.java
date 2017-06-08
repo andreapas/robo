@@ -8,6 +8,7 @@ import algorithm.proxyMovements.Movements;
 
 public class CheckSpace {
 
+	private static final double AMOUNT_TO_MOVE = 0.8;
 	private Position startPosition = new Position();
 	private Position positionX1 = new Position();
 	private Position positionX2 = new Position();
@@ -23,38 +24,38 @@ public class CheckSpace {
 	}
 
 	public Position findGoal() {
-		System.out.println("Find Goal... forse");
+//		System.out.println("Find Goal... forse");
 		if (startPosition.getRadiants() > 0.1 || startPosition.getRadiants() < -0.1) {
 			if (startPosition.getRadiants() > 0) {
-				System.out.println("Rotating right... forse");
+//				System.out.println("Rotating right... forse");
 
 				Mediator.getMed().rotateTo(0, Movements.ROTATE_RIGHT);
-				System.out.println("Agg fornut... forse");
+//				System.out.println("Agg fornut... forse");
 
 			} else {
-				System.out.println("Rotating left... forse");
+//				System.out.println("Rotating left... forse");
 
 				Mediator.getMed().rotateTo(0, Movements.ROTATE_LEFT);
-				System.out.println("Agg fornut... forse");
+//				System.out.println("Agg fornut... forse");
 
 			}
 		}
 
 		if (checkActual(Mediator.getMed().getCentralInfo())) {
-			System.out.println("primo if... forse");
+//			System.out.println("primo if... forse");
 
 			identifySecondXAndOther("forward");
 		} else if (checkActual(Mediator.getMed().getBackInfo())) {
-			System.out.println("secondo if... forse");
+//			System.out.println("secondo if... forse");
 
 			identifySecondXAndOther("backward");
 		} else {
-			System.out.println("terzo if... forse");
+//			System.out.println("terzo if... forse");
 
 			otherPosition.setPosition(startPosition);
 			Mediator.getMed().rotateOf(Math.PI / 2, Movements.ROTATE_LEFT);
 			if (checkActual(Mediator.getMed().getCentralInfo())) {
-				System.out.println("quarto if... forse");
+//				System.out.println("quarto if... forse");
 
 				identifyXsPoints("forward");
 			} else if (checkActual(Mediator.getMed().getBackInfo())) {
@@ -63,7 +64,7 @@ public class CheckSpace {
 				identifyXsPoints("backward");
 			}
 		}
-		System.out.println("fanculo ho finito. Se non funziono sono cazzi di Davide!");
+//		System.out.println("fanculo ho finito. Se non funziono sono cazzi di Davide!");
 		
 		return GoalCoordinatesCalculator.findGoal(positionX1, positionX2, otherPosition);
 	}
@@ -85,7 +86,7 @@ public class CheckSpace {
 		} else {
 			Mediator.getMed().rotateOf(Math.PI / 2, Movements.ROTATE_RIGHT);
 			checkBack("forward");
-			Mediator.getMed().goStraight(0.4);
+			Mediator.getMed().goStraight(AMOUNT_TO_MOVE);
 			Mediator.getMed().rotateOf(Math.PI / 2, Movements.ROTATE_LEFT);
 			if (checkActual(Mediator.getMed().getCentralInfo())) {
 				Mediator.getMed().goStraight(Mediator.getMed().getCentralInfo().getMinDistance() - 0.2);
@@ -104,7 +105,7 @@ public class CheckSpace {
 		if (dir.equals("forward")) {
 			while ((!checkActual(Mediator.getMed().getLeftInfo()) || !checkActual(Mediator.getMed().getLeftInfo()))
 					&& checkActual(Mediator.getMed().getCentralInfo())) {
-				Mediator.getMed().goStraight(0.4);
+				Mediator.getMed().goStraight(AMOUNT_TO_MOVE);
 			}
 			if (!checkActual(Mediator.getMed().getCentralInfo())) {
 				checkBack("backward");
@@ -112,7 +113,7 @@ public class CheckSpace {
 		} else {
 			while ((!checkActual(Mediator.getMed().getLeftInfo()) || !checkActual(Mediator.getMed().getLeftInfo()))
 					&& checkActual(Mediator.getMed().getBackInfo())) {
-				Mediator.getMed().goBack(0.4);
+				Mediator.getMed().goBack(AMOUNT_TO_MOVE);
 			}
 			if (!checkActual(Mediator.getMed().getBackInfo())) {
 				System.out.println("ERRORE: NON SO PIU' DOVE ANDARE");
@@ -125,40 +126,40 @@ public class CheckSpace {
 		if (direction.equals("forward")) {
 			while (checkActual(Mediator.getMed().getCentralInfo())) {
 				if (checkActual(Mediator.getMed().getLeftInfo()) || checkActual(Mediator.getMed().getRightInfo())) {
-					Mediator.getMed().goStraight(0.4);
+					Mediator.getMed().goStraight(AMOUNT_TO_MOVE);
 				}
 			}
-			Mediator.getMed().goStraight(0.4);
+			Mediator.getMed().goStraight(AMOUNT_TO_MOVE);
 			Mediator.getMed().rotateOf(Math.PI, Movements.ROTATE_LEFT);
 			if (checkActual(Mediator.getMed().getCentralInfo())) {
-				Mediator.getMed().goStraight(0.4);
+				Mediator.getMed().goStraight(AMOUNT_TO_MOVE);
 				positionX1.setPosition(Mediator.getMed().getActualPosition(), Mediator.getMed().getDistanceFromGoal());
-				Mediator.getMed().goStraight(0.4);
+				Mediator.getMed().goStraight(AMOUNT_TO_MOVE);
 				positionX2.setPosition(Mediator.getMed().getActualPosition(), Mediator.getMed().getDistanceFromGoal());
 			} else {
-				Mediator.getMed().goBack(0.4);
+				Mediator.getMed().goBack(AMOUNT_TO_MOVE);
 				positionX1.setPosition(Mediator.getMed().getActualPosition(), Mediator.getMed().getDistanceFromGoal());
-				Mediator.getMed().goBack(0.4);
+				Mediator.getMed().goBack(AMOUNT_TO_MOVE);
 				positionX2.setPosition(Mediator.getMed().getActualPosition(), Mediator.getMed().getDistanceFromGoal());
 			}
 		} else {
 			Mediator.getMed().rotateOf(Math.PI, Movements.ROTATE_RIGHT);
 			while (checkActual(Mediator.getMed().getCentralInfo())) {
 				if (checkActual(Mediator.getMed().getLeftInfo()) || checkActual(Mediator.getMed().getRightInfo())) {
-					Mediator.getMed().goStraight(0.4);
+					Mediator.getMed().goStraight(AMOUNT_TO_MOVE);
 				}
 			}
-			Mediator.getMed().goStraight(0.4);
+			Mediator.getMed().goStraight(AMOUNT_TO_MOVE);
 			Mediator.getMed().rotateOf(Math.PI, Movements.ROTATE_LEFT);
 			if (checkActual(Mediator.getMed().getCentralInfo())) {
-				Mediator.getMed().goStraight(0.4);
+				Mediator.getMed().goStraight(AMOUNT_TO_MOVE);
 				positionX1.setPosition(Mediator.getMed().getActualPosition(), Mediator.getMed().getDistanceFromGoal());
-				Mediator.getMed().goStraight(0.4);
+				Mediator.getMed().goStraight(AMOUNT_TO_MOVE);
 				positionX2.setPosition(Mediator.getMed().getActualPosition(), Mediator.getMed().getDistanceFromGoal());
 			} else {
-				Mediator.getMed().goBack(0.4);
+				Mediator.getMed().goBack(AMOUNT_TO_MOVE);
 				positionX1.setPosition(Mediator.getMed().getActualPosition(), Mediator.getMed().getDistanceFromGoal());
-				Mediator.getMed().goBack(0.4);
+				Mediator.getMed().goBack(AMOUNT_TO_MOVE);
 				positionX2.setPosition(Mediator.getMed().getActualPosition(), Mediator.getMed().getDistanceFromGoal());
 			}
 		}

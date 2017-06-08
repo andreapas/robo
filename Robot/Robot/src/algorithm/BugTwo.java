@@ -83,38 +83,65 @@ public class BugTwo {
 	
 	private void boundaryFollowing() {
 		
+		System.out.println("Sono il codice di DAVIDE-- calcolo hit position");
 		hitPosition = Mediator.getMed().getActualPosition();
+		System.out.println("Sono il codice di DAVIDE-- hit position= "+hitPosition);
+
 	    justHit = true;
+		System.out.println("Sono il codice di DAVIDE-- justHit= "+justHit);
+
 		
+		System.out.println("Sono il codice di DAVIDE-- entro nel while...");
+
 		while(true) {
-			
+			System.out.println("\tSono il codice di DAVIDE-- check se ho trovato il Goal!");
+
 			if(isGoalReached()) {
 				goalReached = true;
 				break;
 			}
 			
+			System.out.println("\tSono il codice di DAVIDE-- non l'ho trovato, mi tocca ancora camminare");
+
 			if(justHit == false && hitPosition.equals(Mediator.getMed().getActualPosition())) {
+				System.out.println("\tSono il codice di DAVIDE-- primo if");
+
 				failure = true;
 				break;
 			}
 			
 			if(!justHit && isOnTheRect()) {
+				System.out.println("\tSono il codice di DAVIDE-- secondo if");
+
 				break;
 			}
 			
 			if (justHit) {
+				System.out.println("\tSono il codice di DAVIDE-- terzo if");
+
 				if (!Mediator.getMed().getActualPosition().equals(hitPosition)) {
+					System.out.println("\tSono il codice di DAVIDE-- quarto if");
+
 					justHit = false;
 				}
 			}
 			
 			if (Mediator.getMed().getCentralInfo().getMinDistance()<2.0) {
+				System.out.println("\tSono il codice di DAVIDE-- quinto if");
+
 				Mediator.getMed().rotateOf(0.3, boundaryRotationDirection);
 			} else if (boundarySensorInfo.getMinDistance()<1.5) {
+				System.out.println("\tSono il codice di DAVIDE-- sesto if");
+
 				Mediator.getMed().rotateOf(0.3, boundaryRotationDirection);
+
 			} else if (boundarySensorInfo.getMinDistance()>1.8) {
+				System.out.println("\tSono il codice di DAVIDE-- settimo if");
+
 				Mediator.getMed().rotateOf(0.3, boundaryRotationDirection);
 			} else {
+				System.out.println("\tSono il codice di DAVIDE-- ottavo if");
+
 				Mediator.getMed().goStraight();
 			}		
 		}

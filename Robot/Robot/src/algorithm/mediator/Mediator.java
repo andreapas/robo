@@ -53,9 +53,12 @@ public class Mediator {
 	}
 	
 	public void runRobot(String name) throws Exception {
+		System.out.println("INIT PHASE");
 		initializePhase(name);
+		System.out.println("FIND GOAL PHASE");
 		goalCoordinates=CheckSpace.getChecker().findGoal();
 		System.out.println("Se sono io, Davide può picchiare Andrea... "+goalCoordinates);
+		System.out.println("BUG TWO PHASE");
 		algorithm.run();
 
 	}
@@ -124,7 +127,9 @@ public class Mediator {
 			movement.selectMovementType(direction);
 			speedAct.act(movement.move());
 			poseSens.sense();
-			while (!isInRange(actualPosition.getRadiants(), actualAngle+relative)) {
+			//System.out.println("actual= "+ actualAngle+ " relative= "+relative);
+			while (!isInRange(actualPosition.getRadiants(), correctSum(actualAngle, relative))) {
+				//System.out.println("--- "+actualPosition.getRadiants()+" act+ rel= "+correctSum(actualAngle, relative)+ " is in range? "+isInRange(actualPosition.getRadiants(), correctSum(actualAngle, relative)));
 				poseSens.sense();
 			}
 		} catch (IOException e) {
@@ -133,6 +138,21 @@ public class Mediator {
 		stop();
 	}
 
+	private double correctSum(double actualAngle, double relativeAngle){
+		double sum=actualAngle+relativeAngle;
+		double diff;
+		if(sum>Math.PI){
+			diff=sum-Math.PI;
+			sum=sum-diff;
+			sum=-sum;
+		}else if(sum<-Math.PI){
+			diff=sum+Math.PI;
+			sum=sum-diff;
+			sum=-sum;
+		}
+		return sum;
+	}
+	
 	public void rotateTo(double absoluteAngle, String direction) {
 		try {
 			movement.selectMovementType(direction);
