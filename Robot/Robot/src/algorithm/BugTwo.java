@@ -58,22 +58,29 @@ public class BugTwo {
 			
 			if(Mediator.getMed().getCentralInfo().getMinDistance()<1.8) {
 				if(Mediator.getMed().getCentralInfo().getRightValue() > Mediator.getMed().getCentralInfo().getLeftValue()) {
+					System.out.println("BDSINFO è LEFT");
 					boundarySensorInfo = Mediator.getMed().getLeftInfo();
 					boundaryRotationDirection = Movements.ROTATE_RIGHT;
 					antiBoundaryRotationDirection = Movements.ROTATE_LEFT;
 					break;
 				} else {
+					System.out.println("BDSINFO è RIGHT");
+
 					boundarySensorInfo = Mediator.getMed().getRightInfo();
 					boundaryRotationDirection = Movements.ROTATE_LEFT;
 					antiBoundaryRotationDirection = Movements.ROTATE_RIGHT;
 					break;
 				}
 			} else if(Mediator.getMed().getLeftInfo().getMinDistance()<1.8 || Mediator.getMed().getCentralInfo().getLeftValue()<1.8) {
+				System.out.println("BDSINFO è LEFT");
+
 				boundarySensorInfo = Mediator.getMed().getLeftInfo();
 				boundaryRotationDirection = Movements.ROTATE_RIGHT;
 				antiBoundaryRotationDirection = Movements.ROTATE_LEFT;
 				break;
 			} else if(Mediator.getMed().getRightInfo().getMinDistance()<1.8 || Mediator.getMed().getCentralInfo().getRightValue()<1.8) {
+				System.out.println("BDSINFO è RIGHT");
+
 				boundarySensorInfo = Mediator.getMed().getRightInfo();
 				boundaryRotationDirection = Movements.ROTATE_LEFT;
 				antiBoundaryRotationDirection = Movements.ROTATE_RIGHT;
@@ -88,6 +95,7 @@ public class BugTwo {
 	
 	private void boundaryFollowing() {
 		
+		System.out.println("Sono il codice di DAVIDE-- bound rot dir= "+ boundaryRotationDirection);
 		System.out.println("Sono il codice di DAVIDE-- calcolo hit position");
 		hitPosition = Mediator.getMed().getActualPosition();
 		System.out.println("Sono il codice di DAVIDE-- hit position= "+hitPosition);
