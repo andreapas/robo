@@ -119,7 +119,7 @@ public class Mediator {
 		}
 
 	}
-
+	
 	public void rotateOf(double relative, String direction) {
 		try {
 			poseSens.sense();
@@ -129,7 +129,7 @@ public class Mediator {
 			poseSens.sense();
 			//System.out.println("actual= "+ actualAngle+ " relative= "+relative);
 			double sum;
-			if(direction.equals(Movements.ROTATE_LEFT)){
+			if(direction.equals(Movements.ROTATE_LEFT)||direction.equals(Movements.TURN_LEFT)){
 				sum=actualAngle+relative;
 			}else{
 				sum=actualAngle-relative;

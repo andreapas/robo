@@ -11,11 +11,11 @@ public class SensorInfo {
 	
 	public double getMinDistance(){
 		double min=100.0;
-		System.out.println("Inizio della print dello stream");
+		/*System.out.println("Inizio della print dello stream");
 		for (int i = 1; i < streamSensed.length; i++) {
 			System.out.print(streamSensed[i]+" ");
 		}
-		System.out.println();
+		System.out.println();*/
 		for (int i = 1; i < streamSensed.length; i++) {
 			double d = streamSensed[i];
 			if(d<min)
