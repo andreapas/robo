@@ -200,7 +200,9 @@ public class Mediator {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return actualPosition;
+		Position out= new Position();
+		out.setPosition(actualPosition,getDistanceFromGoal());
+		return out;
 	}
 
 	public double getDistanceFromGoal() {

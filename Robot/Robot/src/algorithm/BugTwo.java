@@ -1,7 +1,5 @@
 package algorithm;
 
-import com.sun.java.swing.plaf.motif.MotifEditorPaneUI;
-
 import algorithm.mediator.Mediator;
 import algorithm.proxyMovements.Movements;
 
@@ -20,12 +18,18 @@ public class BugTwo {
 	private boolean goalReached = false;
 	private boolean failure = false;
 	private double rect_m;
-	private double rect_q;
+	private String lastTurn;
 	private double mToGoal;
+	private double last_m;
 	
 	
 	public void run() {
 
+		if(Math.random()>0.5){
+			lastTurn="r";
+		}else{
+			lastTurn="l";
+		}
 		calculateGoalRect();
 		
 		while(!goalReached && !failure) {
@@ -47,11 +51,13 @@ public class BugTwo {
 	}
 	
 	private void calculateGoalRect() {
-		rect_m = (Mediator.getMed().getGoal().getY() - Mediator.getMed().getActualPosition().getY())/(Mediator.getMed().getGoal().getX() - Mediator.getMed().getActualPosition().getX());
-		rect_q = Mediator.getMed().getActualPosition().getY()-rect_m*Mediator.getMed().getActualPosition().getX();
+		Position tmp= Mediator.getMed().getActualPosition();
+		rect_m = (Mediator.getMed().getGoal().getY() - tmp.getY())/(Mediator.getMed().getGoal().getX() - tmp.getX());
 	}
 
 	private void motionToGoal() {
+		
+		rotateToGoal();
 		
 		while(true) {
 			if(isGoalReached()) {
@@ -60,12 +66,13 @@ public class BugTwo {
 			}
 
 			if(Mediator.getMed().getCentralInfo().getMinDistance()<CENTER_DIST) {
-				if(Mediator.getMed().getCentralInfo().getRightValue() > Mediator.getMed().getCentralInfo().getLeftValue()) {
+				if(lastTurn.equals("r")) {
 
 					boundaryDirection = "l";
+					lastTurn="l";
 					break;
 				} else {
-
+					lastTurn="r";
 					boundaryDirection = "r";
 					break;
 				}
@@ -79,7 +86,7 @@ public class BugTwo {
 				boundaryDirection = "r";
 				break;
 			} else {
-				rotateToGoal();
+				//rotateToGoal();
 				Mediator.getMed().goStraight();
 			}
 			
@@ -108,8 +115,8 @@ public class BugTwo {
 			}
 			
 //			System.out.println("\tSono il codice di DAVIDE-- non l'ho trovato, mi tocca ancora camminare");
-
-			if(justHit == false && hitPosition.equals(Mediator.getMed().getActualPosition())) {
+			Position tmp= Mediator.getMed().getActualPosition();
+			if(justHit == false && hitPosition.equals(tmp)) {
 //				System.out.println("\tSono il codice di DAVIDE-- primo if");
 
 				failure = true;
@@ -117,7 +124,8 @@ public class BugTwo {
 			}
 			
 			System.out.println("Exit from While? ");
-			if(!justHit && isOnTheRect()) {
+			System.out.println("hitD= "+hitPosition.getDistanceFromGoal()+" actual= "+tmp.getDistanceFromGoal());
+			if(!justHit && isOnTheRect() && tmp.getDistanceFromGoal() < hitPosition.getDistanceFromGoal()) {
 				System.out.println("yes");
 //				System.out.println("\tSono il codice di DAVIDE-- secondo if");
 
@@ -127,11 +135,11 @@ public class BugTwo {
 			
 			if (justHit) {
 //				System.out.println("\tSono il codice di DAVIDE-- terzo if");
-				System.out.println("\tActualPos= "+Mediator.getMed().getActualPosition()+" hitPos= "+hitPosition);
+				System.out.println("\tActualPos= "+tmp+" hitPos= "+hitPosition);
 //				if (!Mediator.getMed().getActualPosition().equals(hitPosition)) {
 //					System.out.println("\tSono il codice di DAVIDE-- quarto if");
 
-				if((!isInRange(Mediator.getMed().getActualPosition().getX(), hitPosition.getX(),0.1))||(!isInRange(Mediator.getMed().getActualPosition().getY(), hitPosition.getY(),0.1))){
+				if((!isInRange(tmp.getX(), hitPosition.getX(),0.1))||(!isInRange(tmp.getY(), hitPosition.getY(),0.1))){
 					justHit = false;
 				}
 			}
@@ -181,21 +189,33 @@ public class BugTwo {
 	}
 	
 	private void rotateToGoal() {
-		
-		mToGoal = (Mediator.getMed().getGoal().getY() - Mediator.getMed().getActualPosition().getY())/(Mediator.getMed().getGoal().getX() - Mediator.getMed().getActualPosition().getX());
-		Mediator.getMed().rotateTo(Math.atan(mToGoal), Movements.ROTATE_RIGHT);
+		Position tmp= Mediator.getMed().getActualPosition();
+		mToGoal = (Mediator.getMed().getGoal().getY() - tmp.getY())/(Mediator.getMed().getGoal().getX() - tmp.getX());
+		if(tmp.getRadiants()>Math.atan(mToGoal)){
+			Mediator.getMed().rotateTo(Math.atan(mToGoal), Movements.ROTATE_RIGHT);
+		}else{
+			Mediator.getMed().rotateTo(Math.atan(mToGoal), Movements.ROTATE_LEFT);
+		}
 	}
 
 	private boolean isOnTheRect() {
-		double y = Mediator.getMed().getActualPosition().getY();
-		double x = Mediator.getMed().getActualPosition().getX();
+		Position tmp = Mediator.getMed().getActualPosition();
+		boolean output;
+		double y = tmp.getY();
+		double x = tmp.getX();
 		
-		double m = (Mediator.getMed().getGoal().getY() - y)/(Mediator.getMed().getGoal().getX() - x);
-		double q = y- m*x;
+		double m = Math.abs((Mediator.getMed().getGoal().getY() - y)/(Mediator.getMed().getGoal().getX() - x));
 		
-		System.out.println("r_m= "+ rect_m+" r_q= "+rect_q);
-		System.out.println("m= "+ m+" q= "+ q);
-		boolean output=(isInRange(m, rect_m, 0.2)&&isInRange(q, rect_q, 0.2));
+		System.out.println("r_m= "+ rect_m);
+		System.out.println("last m= "+last_m);
+		System.out.println("actual m= "+ m);
+		
+		System.out.println("first condition (m>rect_m && rect_m>last_m): "+ (m>rect_m && rect_m>last_m));
+		System.out.println("second condition (m<rect_m && rect_m<last_m): "+ (m<rect_m && rect_m<last_m));
+		System.out.println("third condition isInrange: "+ isInRange(m, rect_m, 0.2));
+
+		output=((m>rect_m && rect_m>last_m) || (m<rect_m && rect_m<last_m))||isInRange(m, rect_m, 0.2);
+		last_m = m;
 		return output;
 //		return (y>(rect_m*x+rect_q)-0.5) && (y<(rect_m*x+rect_q)+0.5);
 	}
