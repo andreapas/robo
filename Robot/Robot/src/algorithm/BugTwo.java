@@ -12,15 +12,12 @@ public class BugTwo {
 	private Position hitPosition= new Position();
 	private boolean justHit;
 	private String boundaryDirection;
-	private SensorInfo boundarySensorInfo;
-	private String boundaryRotationDirection;
-	private String antiBoundaryRotationDirection;
 	private boolean goalReached = false;
 	private boolean failure = false;
-	private double rect_m;
+	private double rect_arc;
 	private String lastTurn;
-	private double mToGoal;
-	private double last_m;
+	private double arcToGoal;
+	//private double last_arc;
 	
 	
 	public void run() {
@@ -30,12 +27,13 @@ public class BugTwo {
 		}else{
 			lastTurn="l";
 		}
-		calculateGoalRect();
+		rect_arc = calculateGoalRect();
+		System.out.println("rect_arc = "+rect_arc);
 		
 		while(!goalReached && !failure) {
 			System.out.println("Sono il codice di DAVIDE-- inizio il motion");
 			motionToGoal();
-			System.out.println("Sono il codice di DAVIDE-- if verificato? "+ goalReached);
+//			System.out.println("Sono il codice di DAVIDE-- if verificato? "+ goalReached);
 			if(goalReached) break;
 			System.out.println("Sono il codice di DAVIDE-- inizio il boundary");
 			boundaryFollowing();
@@ -50,9 +48,14 @@ public class BugTwo {
 		}
 	}
 	
-	private void calculateGoalRect() {
+	private double calculateGoalRect() {
 		Position tmp= Mediator.getMed().getActualPosition();
-		rect_m = (Mediator.getMed().getGoal().getY() - tmp.getY())/(Mediator.getMed().getGoal().getX() - tmp.getX());
+		System.out.println("position: "+tmp.getX()+", "+tmp.getY());
+		System.out.println("goalx: "+Mediator.getMed().getGoal().getX()+" goaly: "+Mediator.getMed().getGoal().getY());
+		double numerator=Mediator.getMed().getGoal().getY() - tmp.getY();
+		double denominator=Mediator.getMed().getGoal().getX() - tmp.getX();
+		System.out.println("numeratore: "+numerator+" denominatore: "+denominator);
+		return Math.atan((numerator)/(denominator));
 	}
 
 	private void motionToGoal() {
@@ -95,16 +98,16 @@ public class BugTwo {
 	
 	private void boundaryFollowing() {
 		
-		System.out.println("Sono il codice di DAVIDE-- bound rot dir= "+ boundaryRotationDirection);
-		System.out.println("Sono il codice di DAVIDE-- calcolo hit position");
+//		System.out.println("Sono il codice di DAVIDE-- bound rot dir= "+ boundaryRotationDirection);
+//		System.out.println("Sono il codice di DAVIDE-- calcolo hit position");
 		hitPosition.setPosition(Mediator.getMed().getActualPosition());
-		System.out.println("Sono il codice di DAVIDE-- hit position= "+hitPosition);
+//		System.out.println("Sono il codice di DAVIDE-- hit position= "+hitPosition);
 
 	    justHit = true;
-		System.out.println("Sono il codice di DAVIDE-- justHit= "+justHit);
+//		System.out.println("Sono il codice di DAVIDE-- justHit= "+justHit);
 
 		
-		System.out.println("Sono il codice di DAVIDE-- entro nel while...");
+//		System.out.println("Sono il codice di DAVIDE-- entro nel while...");
 
 		while(true) {
 //			System.out.println("\tSono il codice di DAVIDE-- check se ho trovato il Goal!");
@@ -123,25 +126,30 @@ public class BugTwo {
 				break;
 			}
 			
-			System.out.println("Exit from While? ");
-			System.out.println("hitD= "+hitPosition.getDistanceFromGoal()+" actual= "+tmp.getDistanceFromGoal());
+			//System.out.println("Exit from While? ");
+			System.out.println("justHit= "+justHit+" hitD= "+hitPosition.getDistanceFromGoal()+" actual= "+tmp.getDistanceFromGoal());
 			if(!justHit && isOnTheRect() && tmp.getDistanceFromGoal() < hitPosition.getDistanceFromGoal()) {
-				System.out.println("yes");
+//				System.out.println("yes");
 //				System.out.println("\tSono il codice di DAVIDE-- secondo if");
 
 				break;
 			}
-			System.out.println("no");
+			//System.out.println("no");
 			
 			if (justHit) {
 //				System.out.println("\tSono il codice di DAVIDE-- terzo if");
-				System.out.println("\tActualPos= "+tmp+" hitPos= "+hitPosition);
+				//System.out.println("\tActualPos= "+tmp+" hitPos= "+hitPosition);
 //				if (!Mediator.getMed().getActualPosition().equals(hitPosition)) {
 //					System.out.println("\tSono il codice di DAVIDE-- quarto if");
 
-				if((!isInRange(tmp.getX(), hitPosition.getX(),0.1))||(!isInRange(tmp.getY(), hitPosition.getY(),0.1))){
+				if (!isOnTheRect()) {
 					justHit = false;
 				}
+				
+//				System.out.println("x = "+tmp.getX()+" y = "+tmp.getY()+" hitx="+hitPosition.getX()+" hity="+hitPosition.getY());
+//				if((!isInRange(tmp.getX(), hitPosition.getX(),1))||(!isInRange(tmp.getY(), hitPosition.getY(),1))){
+//					justHit = false;
+//				}
 			}
 //			System.out.println("STO PER FARE IL MIN DIST");
 			if (boundaryDirection.equals("l")) {
@@ -189,13 +197,39 @@ public class BugTwo {
 	}
 	
 	private void rotateToGoal() {
-		Position tmp= Mediator.getMed().getActualPosition();
-		mToGoal = (Mediator.getMed().getGoal().getY() - tmp.getY())/(Mediator.getMed().getGoal().getX() - tmp.getX());
-		if(tmp.getRadiants()>Math.atan(mToGoal)){
-			Mediator.getMed().rotateTo(Math.atan(mToGoal), Movements.ROTATE_RIGHT);
-		}else{
-			Mediator.getMed().rotateTo(Math.atan(mToGoal), Movements.ROTATE_LEFT);
+		arcToGoal = calculateGoalRect();
+		Position tmp = new Position();
+		tmp.setPosition(Mediator.getMed().getActualPosition());
+		System.out.println("arcToGoal "+arcToGoal);
+		
+		String movement = Movements.ROTATE_LEFT;
+		double newArcToGoal;
+		double myArc;
+		if (arcToGoal < 0) {
+			newArcToGoal = arcToGoal + 2*Math.PI;
+		} else {
+			newArcToGoal = arcToGoal;
 		}
+		if (tmp.getRadiants() < 0) {
+			myArc = tmp.getRadiants() + 2*Math.PI;
+		} else {
+			myArc = tmp.getRadiants();
+		}
+		if (myArc > 0 && myArc < Math.PI) {
+			if (myArc < newArcToGoal && newArcToGoal < myArc+Math.PI) {
+				movement = Movements.ROTATE_LEFT;
+			} else {
+				movement = Movements.ROTATE_RIGHT;
+			}
+		} else {
+			if (myArc-Math.PI < newArcToGoal && newArcToGoal > myArc) {
+				movement = Movements.ROTATE_RIGHT;
+			} else {
+				movement = Movements.ROTATE_LEFT;
+			}
+		}
+		
+		Mediator.getMed().rotateTo(arcToGoal, movement);
 	}
 
 	private boolean isOnTheRect() {
@@ -205,17 +239,17 @@ public class BugTwo {
 		double x = tmp.getX();
 		
 		double m = Math.abs((Mediator.getMed().getGoal().getY() - y)/(Mediator.getMed().getGoal().getX() - x));
-		
-		System.out.println("r_m= "+ rect_m);
-		System.out.println("last m= "+last_m);
-		System.out.println("actual m= "+ m);
-		
-		System.out.println("first condition (m>rect_m && rect_m>last_m): "+ (m>rect_m && rect_m>last_m));
-		System.out.println("second condition (m<rect_m && rect_m<last_m): "+ (m<rect_m && rect_m<last_m));
-		System.out.println("third condition isInrange: "+ isInRange(m, rect_m, 0.2));
+		double arc = Math.atan(m);
+//		System.out.println("m= "+ m);
+		System.out.println("arc= "+arc);
+//		System.out.println("actual m= "+ m);
+//		
+//		System.out.println("first condition (m>rect_m && rect_m>last_m): "+ (m>rect_m && rect_m>last_m));
+//		System.out.println("second condition (m<rect_m && rect_m<last_m): "+ (m<rect_m && rect_m<last_m));
+//		System.out.println("third condition isInrange: "+ isInRange(m, rect_m, 0.2));
 
-		output=((m>rect_m && rect_m>last_m) || (m<rect_m && rect_m<last_m))||isInRange(m, rect_m, 0.2);
-		last_m = m;
+		output=(isInRange(Math.abs(arc), Math.abs(rect_arc), 0.1));
+		//last_arc = arc;
 		return output;
 //		return (y>(rect_m*x+rect_q)-0.5) && (y<(rect_m*x+rect_q)+0.5);
 	}
