@@ -8,7 +8,7 @@ public class RotateRight implements IMovement {
 
 	public RotateRight() {
 		run.put("linVel", 0.0);
-        run.put("angVel", -0.5);
+        run.put("angVel", -1.8);
 	}
 	
 	@Override

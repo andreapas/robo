@@ -27,7 +27,7 @@ public class Mediator {
 	private IrSensor backIr;
 	private PoseSensor poseSens;
 	private DistanceSensor distSens;
-	private String ip = "192.168.1.72";
+	private String ip = "192.168.1.9";
 	private ProxyMovement movement = new ProxyMovement();
 
 	private Position actualPosition = new Position();
@@ -38,10 +38,9 @@ public class Mediator {
 	private SensorInfo backInfo = new SensorInfo();
 
 	private Position goalCoordinates = new Position(0.0, 0.0, 0.0, 0.0);
-	
-	private static BiFunction<Double,Double, Double> pitagora = (a,b) -> Math.sqrt(Math.pow(a, 2)+Math.pow(b, 2));
-	private BugTwo algorithm= new BugTwo();
 
+	private static BiFunction<Double, Double, Double> pitagora = (a, b) -> Math.sqrt(Math.pow(a, 2) + Math.pow(b, 2));
+	private BugTwo algorithm = new BugTwo();
 
 	public static Mediator getMed() {
 		return med;
@@ -49,15 +48,16 @@ public class Mediator {
 
 	public Position getGoal() {
 		return goalCoordinates;
-		
+
 	}
-	
+
 	public void runRobot(String name) throws Exception {
 		System.out.println("INIT PHASE");
 		initializePhase(name);
 		System.out.println("FIND GOAL PHASE");
-		goalCoordinates=CheckSpace.getChecker().findGoal();
-		System.out.println("Se sono io, Davide può picchiare Andrea... "+goalCoordinates);
+		System.out.println("\tSending explorators to look for a rich treasure ...arrr!");
+		goalCoordinates = CheckSpace.getChecker().findGoal();
+		System.out.println("\tTreasure found at: " + goalCoordinates+" ...arrr!");
 		System.out.println("BUG TWO PHASE");
 		algorithm.run();
 
@@ -66,13 +66,13 @@ public class Mediator {
 	public void goStraight(Double distance) {
 		try {
 			poseSens.sense();
-			double actualX=actualPosition.getX();
-			double actualY=actualPosition.getY();
-			
+			double actualX = actualPosition.getX();
+			double actualY = actualPosition.getY();
+
 			movement.selectMovementType(Movements.STRAIGHT_MOVEMENT);
 			speedAct.act(movement.move());
 			poseSens.sense();
-			while (pitagora.apply(actualX-actualPosition.getX(),actualY-actualPosition.getY())<distance) {
+			while (pitagora.apply(actualX - actualPosition.getX(), actualY - actualPosition.getY()) < distance) {
 				poseSens.sense();
 			}
 		} catch (IOException e) {
@@ -80,9 +80,8 @@ public class Mediator {
 		}
 		stop();
 
-
 	}
-	
+
 	public void goStraight() {
 		try {
 			movement.selectMovementType(Movements.STRAIGHT_MOVEMENT);
@@ -96,13 +95,13 @@ public class Mediator {
 	public void goBack(double distance) {
 		try {
 			poseSens.sense();
-			double actualX=actualPosition.getX();
-			double actualY=actualPosition.getY();
-			
+			double actualX = actualPosition.getX();
+			double actualY = actualPosition.getY();
+
 			movement.selectMovementType(Movements.STRAIGHT_MOVEMENT);
 			speedAct.act(movement.move());
 			poseSens.sense();
-			while (pitagora.apply(actualX-actualPosition.getX(),actualY-actualPosition.getY())<distance) {
+			while (pitagora.apply(actualX - actualPosition.getX(), actualY - actualPosition.getY()) < distance) {
 				poseSens.sense();
 			}
 		} catch (IOException e) {
@@ -110,7 +109,8 @@ public class Mediator {
 		}
 		stop();
 	}
-	public void goBack(){
+
+	public void goBack() {
 		try {
 			movement.selectMovementType(Movements.BACK);
 			speedAct.act(movement.move());
@@ -119,7 +119,7 @@ public class Mediator {
 		}
 
 	}
-	
+
 	public void rotateOf(double relative, String direction) {
 		try {
 			poseSens.sense();
@@ -127,15 +127,19 @@ public class Mediator {
 			movement.selectMovementType(direction);
 			speedAct.act(movement.move());
 			poseSens.sense();
-			//System.out.println("actual= "+ actualAngle+ " relative= "+relative);
+			// System.out.println("actual= "+ actualAngle+ " relative=
+			// "+relative);
 			double sum;
-			if(direction.equals(Movements.ROTATE_LEFT)||direction.equals(Movements.TURN_LEFT)){
-				sum=actualAngle+relative;
-			}else{
-				sum=actualAngle-relative;
+			if (direction.equals(Movements.ROTATE_LEFT) || direction.equals(Movements.TURN_LEFT)) {
+				sum = actualAngle + relative;
+			} else {
+				sum = actualAngle - relative;
 			}
 			while (!isInRange(actualPosition.getRadiants(), correctSum(sum))) {
-				//System.out.println("--- "+actualPosition.getRadiants()+" act+ rel= "+correctSum(actualAngle, relative)+ " is in range? "+isInRange(actualPosition.getRadiants(), correctSum(actualAngle, relative)));
+				// System.out.println("--- "+actualPosition.getRadiants()+" act+
+				// rel= "+correctSum(actualAngle, relative)+ " is in range?
+				// "+isInRange(actualPosition.getRadiants(),
+				// correctSum(actualAngle, relative)));
 				poseSens.sense();
 			}
 		} catch (IOException e) {
@@ -144,22 +148,20 @@ public class Mediator {
 		stop();
 	}
 
-	
-	
-	private double correctSum(double sum){
+	private double correctSum(double sum) {
 		double diff;
-		if(sum>Math.PI){
-			diff=sum-Math.PI;
-			sum=sum-diff;
-			sum=-sum;
-		}else if(sum<-Math.PI){
-			diff=sum+Math.PI;
-			sum=sum-diff;
-			sum=-sum;
+		if (sum > Math.PI) {
+			diff = sum - Math.PI;
+			sum = sum - diff;
+			sum = -sum;
+		} else if (sum < -Math.PI) {
+			diff = sum + Math.PI;
+			sum = sum - diff;
+			sum = -sum;
 		}
 		return sum;
 	}
-	
+
 	public void rotateTo(double absoluteAngle, String direction) {
 		try {
 			movement.selectMovementType(direction);
@@ -175,15 +177,15 @@ public class Mediator {
 		stop();
 	}
 
-	private boolean isInRange(double actual, double expected){
-		boolean evaluateLower=actual>(expected-0.1);
-		boolean evaluateUpper=actual<(expected+0.1);
-		//System.out.println("actual= "+actual+ "is in range of +- 0.2 from "+expected+ "?"+(evaluateLower&&evaluateUpper));
-		return (evaluateLower&&evaluateUpper);
-		
+	private boolean isInRange(double actual, double expected) {
+		boolean evaluateLower = actual > (expected - 0.1);
+		boolean evaluateUpper = actual < (expected + 0.1);
+		// System.out.println("actual= "+actual+ "is in range of +- 0.2 from
+		// "+expected+ "?"+(evaluateLower&&evaluateUpper));
+		return (evaluateLower && evaluateUpper);
+
 	}
-	
-	
+
 	public void stop() {
 		try {
 			movement.selectMovementType(Movements.STOP);
@@ -200,8 +202,8 @@ public class Mediator {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		Position out= new Position();
-		out.setPosition(actualPosition,getDistanceFromGoal());
+		Position out = new Position();
+		out.setPosition(actualPosition, getDistanceFromGoal());
 		return out;
 	}
 
@@ -250,12 +252,12 @@ public class Mediator {
 		return rightInfo;
 	}
 
-	
-
 	private void initializePhase(String name) throws IOException {
-
+		System.out.println("\tHiring unpaid droids...");
+		System.out.println("\tInstalling dimensional warper...");
 		speedAct = new SpeedActuator(name, "motion", ip, 4000);
 
+		System.out.println("\tHiring central sentinel...");
 		centralIr = new IrSensor(name, "ir1", ip, 4000);
 		centralIr.setSensorListener(new SensorListener() {
 			@Override
@@ -275,7 +277,7 @@ public class Mediator {
 			public void onSense(int arg0) {
 			}
 		});
-
+		System.out.println("\tHiring left sentinel...");
 		leftIr = new IrSensor(name, "ir2", ip, 4000);
 		leftIr.setSensorListener(new SensorListener() {
 
@@ -297,6 +299,7 @@ public class Mediator {
 			}
 		});
 
+		System.out.println("\tHiring right sentinel...");
 		rightIr = new IrSensor(name, "ir3", ip, 4000);
 		rightIr.setSensorListener(new SensorListener() {
 
@@ -318,6 +321,7 @@ public class Mediator {
 			}
 		});
 
+		System.out.println("\tHiring back guard...");
 		backIr = new IrSensor(name, "ir4", ip, 4000);
 		backIr.setSensorListener(new SensorListener() {
 
@@ -338,6 +342,7 @@ public class Mediator {
 			public void onSense(int arg0) {
 			}
 		});
+		System.out.println("\tBuying expensive sextant...");
 		poseSens = new PoseSensor(name, "pose", ip, 4000);
 		poseSens.setSensorListener(new SensorListener() {
 			@Override
@@ -358,6 +363,7 @@ public class Mediator {
 			}
 		});
 
+		System.out.println("\tInstalling economic radar...");
 		distSens = new DistanceSensor(name, "prox", ip, 4000);
 		distSens.setSensorListener(new SensorListener() {
 			@Override
@@ -365,7 +371,7 @@ public class Mediator {
 				try {
 					distanceFromGoal = map.get("target");
 				} catch (NullPointerException ex) {
-					System.out.println(map);
+					// System.out.println("Oh cazz... "+map);
 				}
 			}
 

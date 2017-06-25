@@ -8,6 +8,7 @@ import algorithm.proxyMovements.Movements;
 
 public class CheckSpace {
 
+	private static final double MIN_DIST = 0.6;
 	private static final double AMOUNT_TO_MOVE = 0.8;
 	private Position startPosition = new Position();
 	private Position positionX1 = new Position();
@@ -89,11 +90,11 @@ public class CheckSpace {
 			Mediator.getMed().goStraight(AMOUNT_TO_MOVE);
 			Mediator.getMed().rotateOf(Math.PI / 2, Movements.ROTATE_LEFT);
 			if (checkActual(Mediator.getMed().getCentralInfo())) {
-				Mediator.getMed().goStraight(Mediator.getMed().getCentralInfo().getMinDistance() - 0.2);
+				Mediator.getMed().goStraight(Mediator.getMed().getCentralInfo().getMinDistance() - MIN_DIST);
 				otherPosition.setPosition(Mediator.getMed().getActualPosition(),
 						Mediator.getMed().getDistanceFromGoal());
 			} else {
-				Mediator.getMed().goBack(Mediator.getMed().getCentralInfo().getMinDistance() - 0.2);
+				Mediator.getMed().goBack(Mediator.getMed().getCentralInfo().getMinDistance() - MIN_DIST);
 				otherPosition.setPosition(Mediator.getMed().getActualPosition(),
 						Mediator.getMed().getDistanceFromGoal());
 			}
