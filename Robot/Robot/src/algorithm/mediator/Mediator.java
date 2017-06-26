@@ -27,7 +27,7 @@ public class Mediator {
 	private IrSensor backIr;
 	private PoseSensor poseSens;
 	private DistanceSensor distSens;
-	private String ip = "192.168.1.9";
+	private String ip = "192.168.1.72";
 	private ProxyMovement movement = new ProxyMovement();
 
 	private Position actualPosition = new Position();

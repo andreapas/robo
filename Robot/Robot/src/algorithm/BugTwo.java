@@ -4,10 +4,11 @@ import algorithm.mediator.Mediator;
 import algorithm.proxyMovements.Movements;
 
 public class BugTwo {
+	private static final double RANGE_FAILURE = 0.5;
 	private static final double BOUNDARY_MAX = 1.2;
 	private static final double BOUNDARY_MIN = 1.0;
 	private static final double OPPOSITE_BOUNDARY = 1.0;
-	private static final double CENTER_DIST = 1.2;
+	private static final double CENTER_DIST = 1.0;
 	private static final double ROTATION_OFFSET = 0.1;
 	// TODO: errore nel rotateOf if quinto, problema nella svolta angolare.
 	private Position hitPosition = new Position();
@@ -15,6 +16,7 @@ public class BugTwo {
 	private String boundaryDirection;
 	private boolean goalReached = false;
 	private boolean failure = false;
+	private boolean already_touched=false;
 	private double rect_arc;
 	private double arcToGoal;
 	private String rotateTo=Movements.ROTATE_RIGHT;
@@ -33,6 +35,9 @@ public class BugTwo {
 			// goalReached);
 			if (goalReached)
 				break;
+			if (failure) {
+				break;
+			}
 			System.out.println("\t Boundary Following Phase");
 			boundaryFollowing();
 		}
@@ -40,9 +45,7 @@ public class BugTwo {
 		if (goalReached) {
 			System.out.println("Goal!\n");
 		} else if (failure) {
-			System.out.println("Fallito\n");
-		} else {
-			System.out.println("Boh\n");
+			System.out.println("There is no solution!\n");
 		}
 	}
 
@@ -109,6 +112,7 @@ public class BugTwo {
 		// "+hitPosition);
 
 		justHit = true;
+		already_touched=true;
 		// System.out.println("Sono il codice di DAVIDE-- justHit= "+justHit);
 
 		// System.out.println("Sono il codice di DAVIDE-- entro nel while...");
@@ -121,10 +125,14 @@ public class BugTwo {
 			}
 
 			Position tmp = Mediator.getMed().getActualPosition();
-			if (justHit == false && hitPosition.equals(tmp)) {
-
+			if (already_touched == false && isInRange(tmp.getX(), hitPosition.getX(), RANGE_FAILURE) && isInRange(tmp.getY(), hitPosition.getY(), RANGE_FAILURE)) {
+				
 				failure = true;
 				break;
+			}
+			
+			if(already_touched){
+				already_touched=(isInRange(tmp.getX(), hitPosition.getX(), RANGE_FAILURE) || isInRange(tmp.getY(), hitPosition.getY(), RANGE_FAILURE));
 			}
 
 			if (!justHit && isOnTheRect() && tmp.getDistanceFromGoal() < hitPosition.getDistanceFromGoal()) {
