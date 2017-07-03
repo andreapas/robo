@@ -21,47 +21,19 @@ public class GoalCoordinatesCalculator {
 	private static double q;
 
 	
-	
-	
-	
 	public static Position findGoal(Position P1, Position P2, Position P3){
 		Position offsetVector= new Position(-P1.getX(), -P1.getY(), 0.0, 0.0);
-//		System.out.println("V= " +offsetVector);;
 		
 		Position P1off=new Position(P1.getX()+offsetVector.getX(), P1.getY()+offsetVector.getY(), 0.0, 0.0);
 		Position P2off=new Position(P2.getX()+offsetVector.getX(), P2.getY()+offsetVector.getY(), 0.0, 0.0);
 		Position P3off=new Position(P3.getX()+offsetVector.getX(), P3.getY()+offsetVector.getY(), 0.0, 0.0);
 		
-//		System.out.println("P1\'= "+P1off);
-//		System.out.println("P2\'= "+P2off);
-//		System.out.println("P3\'= "+P3off);
-		
 		double xoffset=(squareR.apply(P1)-squareR.apply(P2)+squareX.apply(P2off))/(2*P2off.getX());
-//		System.out.println("x= "+xoffset);
 		double yoffset=((squareR.apply(P1)-squareR.apply(P3)+squareX.apply(P3off)+squareY.apply(P3off))/(2*P3off.getY()))-((P3off.getX()/P3off.getY())*xoffset);
-//		System.out.println("y= "+yoffset);
 
 		
 		return new Position(xoffset-offsetVector.getX(), yoffset-offsetVector.getY(), 0, 0);
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	public static Position getGoalPosition(Position min, Position max) {
 
@@ -87,32 +59,7 @@ public class GoalCoordinatesCalculator {
 			System.out.println(dMax2 + " " + max.getDistanceFromGoal()+" 2");
 			return new Position(xG2, calcY.apply(xG2), 0.0, 0.0);
 		}
-		// double m=0.0;
-		// double a=0.0;
-		// double b=0.0;
-		// double alpha=0.0;
-		//
-		// m=(min.getY()-max.getY())/(min.getX()-max.getX());
-		// alpha=Math.atan(m);
-		//
-		// a=max.getDistanceFromGoal()*(Math.sin(alpha));
-		// b=max.getDistanceFromGoal()*(Math.cos(alpha));
-		//
-		// b=max.getX()+b;
-		// a=max.getY()+a;
-
-		// return new Position(b,a, alpha, 0.0);
 	}
-
-	/*
-	 * [10 -10] risultato a1 Position [x=6.9998579025268555,
-	 * y=6.999711036682129, m=2.373617036255382E-8,
-	 * distanceFromGoal=17.26361656188965] b1 Position [x=4.699386119842529,
-	 * y=7.002416610717773, m=1.371509861201048E-4,
-	 * distanceFromGoal=17.798505783081055] c1 Position
-	 * [x=3.8454885482788086, y=6.7290472984313965, m=0.006659831386059523,
-	 * distanceFromGoal=17.825885772705078]
-	 */
 	public static Position trilaterateGoal(Position firstPointGot, Position secondPointGot,
 			Position thirdPointGot) {
 		Position errorX;

@@ -19,6 +19,10 @@ import sensorsActuators.SpeedActuator;
 
 public class Mediator {
 
+	//TODO: bug ordine errato vettore di double position y e rotazione (tipo)
+	//TODO: nullpointer sotto
+	
+	
 	private static Mediator med = new Mediator();
 	private SpeedActuator speedAct;
 	private IrSensor centralIr;
@@ -27,7 +31,7 @@ public class Mediator {
 	private IrSensor backIr;
 	private PoseSensor poseSens;
 	private DistanceSensor distSens;
-	private String ip = "192.168.1.72";
+	private String ip;
 	private ProxyMovement movement = new ProxyMovement();
 
 	private Position actualPosition = new Position();
@@ -51,8 +55,9 @@ public class Mediator {
 
 	}
 
-	public void runRobot(String name) throws Exception {
+	public void runRobot(String name, String ip) throws Exception {
 		System.out.println("INIT PHASE");
+		this.ip=ip;
 		initializePhase(name);
 		System.out.println("FIND GOAL PHASE");
 		System.out.println("\tSending explorators to look for a rich treasure ...arrr!");
@@ -127,8 +132,6 @@ public class Mediator {
 			movement.selectMovementType(direction);
 			speedAct.act(movement.move());
 			poseSens.sense();
-			// System.out.println("actual= "+ actualAngle+ " relative=
-			// "+relative);
 			double sum;
 			if (direction.equals(Movements.ROTATE_LEFT) || direction.equals(Movements.TURN_LEFT)) {
 				sum = actualAngle + relative;
@@ -136,10 +139,6 @@ public class Mediator {
 				sum = actualAngle - relative;
 			}
 			while (!isInRange(actualPosition.getRadiants(), correctSum(sum))) {
-				// System.out.println("--- "+actualPosition.getRadiants()+" act+
-				// rel= "+correctSum(actualAngle, relative)+ " is in range?
-				// "+isInRange(actualPosition.getRadiants(),
-				// correctSum(actualAngle, relative)));
 				poseSens.sense();
 			}
 		} catch (IOException e) {
@@ -180,8 +179,6 @@ public class Mediator {
 	private boolean isInRange(double actual, double expected) {
 		boolean evaluateLower = actual > (expected - 0.1);
 		boolean evaluateUpper = actual < (expected + 0.1);
-		// System.out.println("actual= "+actual+ "is in range of +- 0.2 from
-		// "+expected+ "?"+(evaluateLower&&evaluateUpper));
 		return (evaluateLower && evaluateUpper);
 
 	}
@@ -371,7 +368,7 @@ public class Mediator {
 				try {
 					distanceFromGoal = map.get("target");
 				} catch (NullPointerException ex) {
-					// System.out.println("Oh cazz... "+map);
+					//TODO: problema con libreria Java
 				}
 			}
 

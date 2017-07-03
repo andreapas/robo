@@ -12,13 +12,6 @@ public class Position {
 	}
 	
 	
-//	public Position(double x, double y, double m) {
-//		this.x = x;
-//		this.y = y;
-//		this.radiants = m;
-//
-//	}
-//	
 	public Position(double x, double y, double m, double distanceFromGoal) {
 		this.x = x;
 		this.y = y;

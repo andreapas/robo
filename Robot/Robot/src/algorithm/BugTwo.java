@@ -10,7 +10,6 @@ public class BugTwo {
 	private static final double OPPOSITE_BOUNDARY = 1.0;
 	private static final double CENTER_DIST = 1.0;
 	private static final double ROTATION_OFFSET = 0.1;
-	// TODO: errore nel rotateOf if quinto, problema nella svolta angolare.
 	private Position hitPosition = new Position();
 	private boolean justHit;
 	private String boundaryDirection;
@@ -20,19 +19,15 @@ public class BugTwo {
 	private double rect_arc;
 	private double arcToGoal;
 	private String rotateTo=Movements.ROTATE_RIGHT;
-	// private double last_arc;
 
 	public void run() {
 
 		
 		rect_arc = calculateGoalRect();
-		//System.out.println("rect_arc = " + rect_arc);
 
 		while (!goalReached && !failure) {
 			System.out.println("\t Motion to Goal Phase");
 			motionToGoal();
-			// System.out.println("Sono il codice di DAVIDE-- if verificato? "+
-			// goalReached);
 			if (goalReached)
 				break;
 			if (failure) {
@@ -51,11 +46,8 @@ public class BugTwo {
 
 	private double calculateGoalRect() {
 		Position tmp = Mediator.getMed().getActualPosition();
-		//System.out.println("position: " + tmp.getX() + ", " + tmp.getY());
-		//System.out.println("goalx: " + Mediator.getMed().getGoal().getX() + " goaly: " + Mediator.getMed().getGoal().getY());
 		double numerator = Mediator.getMed().getGoal().getY() - tmp.getY();
 		double denominator = Mediator.getMed().getGoal().getX() - tmp.getX();
-		//System.out.println("numeratore: " + numerator + " denominatore: " + denominator);
 
 		return Math.atan2(numerator, denominator); 
 	}
@@ -73,18 +65,7 @@ public class BugTwo {
 			if (Mediator.getMed().getCentralInfo().getMinDistance() < CENTER_DIST) {
 					boundaryDirection = decideWhereToGo();
 					break;
-			}/* else if (Mediator.getMed().getLeftInfo().getMinDistance() < 1.8
-					|| Mediator.getMed().getCentralInfo().getLeftValue() < CENTER_DIST) {
-
-				boundaryDirection = "l";
-				break;
-			} else if (Mediator.getMed().getRightInfo().getMinDistance() < 1.8
-					|| Mediator.getMed().getCentralInfo().getRightValue() < CENTER_DIST) {
-
-				boundaryDirection = "r";
-				break;
-			} */else {
-				// rotateToGoal();
+			}else {
 				Mediator.getMed().goStraight();
 			}
 
@@ -93,7 +74,6 @@ public class BugTwo {
 
 	private String decideWhereToGo(){
 		double val=Math.random();
-//		System.out.println(val);
 		if (val > 0.5) {
 			return "r";
 		} else {
@@ -102,21 +82,9 @@ public class BugTwo {
 	}
 	
 	private void boundaryFollowing() {
-
-		// System.out.println("Sono il codice di DAVIDE-- bound rot dir= "+
-		// boundaryRotationDirection);
-		// System.out.println("Sono il codice di DAVIDE-- calcolo hit
-		// position");
 		hitPosition.setPosition(Mediator.getMed().getActualPosition());
-		// System.out.println("Sono il codice di DAVIDE-- hit position=
-		// "+hitPosition);
-
 		justHit = true;
 		already_touched=true;
-		// System.out.println("Sono il codice di DAVIDE-- justHit= "+justHit);
-
-		// System.out.println("Sono il codice di DAVIDE-- entro nel while...");
-
 		while (true) {
 
 			if (isGoalReached()) {
@@ -200,14 +168,12 @@ public class BugTwo {
 			myArc = tmp.getRadiants();
 		}
 		if (myArc > 0 && myArc < Math.PI) {
-//			System.out.println("primo if");
 			if (myArc < newArcToGoal && newArcToGoal < myArc + Math.PI) {
 				return Movements.ROTATE_LEFT;
 			} else {
 				return Movements.ROTATE_RIGHT;
 			}
 		} else {
-//			System.out.println("secondo if");
 			if (myArc - Math.PI < newArcToGoal && newArcToGoal < myArc) {
 				return Movements.ROTATE_RIGHT;
 			} else {
@@ -231,21 +197,8 @@ public class BugTwo {
 		double numerator = (Mediator.getMed().getGoal().getY() - y);
 		double denominator = (Mediator.getMed().getGoal().getX() - x);
 		double arc = Math.atan2(numerator, denominator);
-		// System.out.println("m= "+ m);
-		//System.out.println("arc= " + arc);
-		// System.out.println("actual m= "+ m);
-		//
-		// System.out.println("first condition (m>rect_m && rect_m>last_m): "+
-		// (m>rect_m && rect_m>last_m));
-		// System.out.println("second condition (m<rect_m && rect_m<last_m): "+
-		// (m<rect_m && rect_m<last_m));
-		// System.out.println("third condition isInrange: "+ isInRange(m,
-		// rect_m, 0.2));
-
 		output = (isInRange(Math.abs(arc), Math.abs(rect_arc), 0.1));
-		// last_arc = arc;
 		return output;
-		// return (y>(rect_m*x+rect_q)-0.5) && (y<(rect_m*x+rect_q)+0.5);
 	}
 
 	private boolean isGoalReached() {
@@ -259,8 +212,6 @@ public class BugTwo {
 	private boolean isInRange(double actual, double expected, double error) {
 		boolean evaluateLower = actual > (expected - error);
 		boolean evaluateUpper = actual < (expected + error);
-		// System.out.println("actual= "+actual+ "is in range of +- 0.2 from
-		// "+expected+ "?"+(evaluateLower&&evaluateUpper));
 		return (evaluateLower && evaluateUpper);
 
 	}
